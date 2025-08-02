@@ -1,0 +1,36 @@
+{
+  "totalProjects": 12,
+  "ongoingProjects": 5,
+  "closedProjects": 7,
+  "chartData": [
+    { "name": "Total", "value": 12 },
+    { "name": "Ongoing", "value": 5 },
+    { "name": "Closed", "value": 7 }
+  ],
+  "projects": [
+    {
+      "name": "Project A",
+      "status": "Ongoing",
+      "startDate": "2023-01-15",
+      "endDate": "2023-03-20"
+    },
+    {
+      "name": "Project B",
+      "status": "Ongoing",
+      "startDate": "2023-02-10",
+      "endDate": "2023-04-25"
+    },
+    {
+      "name": "Project C",
+      "status": "Closed",
+      "startDate": "2023-01-05",
+      "endDate": "2023-02-15"
+    },
+    {
+      "name": "Project D",
+      "status": "Ongoing",
+      "startDate": "2023-06-18",
+      "endDate": "2023-09-30"
+    }
+  ]
+}
