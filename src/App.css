@@ -3,6 +3,6 @@
 
 
 body {
-  background-color: #FFFFFF text-darkText font-sans;
-  
+  font-family: 'Inter', sans-serif;
+  background-color: #FFFFFF ,text-dark, Text font-sans;
 }

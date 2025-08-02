@@ -14,8 +14,6 @@ const Sidebar = () => {
 
   return (
     <aside className="w-64 min-h-screen bg-[#02353C] text-white p-5">
-
-
       <nav className="flex flex-col space-y-2">
         {navItems.map(({ path, label, icon }) => (
           <NavLink
@@ -29,7 +27,7 @@ const Sidebar = () => {
             }
           >
             {icon}
-            <span className="text-sm font-medium">{label}</span>
+            <span className="text-sm font-semibold">{label}</span>
           </NavLink>
         ))}
       </nav>

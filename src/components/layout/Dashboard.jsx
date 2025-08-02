@@ -3,6 +3,7 @@ import { fetchDashboardData } from "../../services/api";
 import StatsCard from "../../components/dashboard/StatsCard";
 import Charts from "../../components/dashboard/Charts";
 import ProjectTable from "../../components/layout/ProjectTable";
+import ProjectCard from "./ProjectCard";
 
 export default function Dashboard() {
   const [data, setData] = useState(null);
@@ -20,6 +21,9 @@ export default function Dashboard() {
         <Charts chartData={data.chartData} />
         <ProjectTable projects={data.projects} />
       </div>
+      <div className="p-6">
+      <ProjectCard project={sampleData} />
+    </div>
     </div>
   );
 }
