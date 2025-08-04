@@ -1,21 +1,31 @@
-// src/components/layout/Layout.jsx
 import React from "react";
 import Sidebar from "./Sidebar";
 import GlobalHeader from "./GlobalHeader";
-import { Outlet } from "react-router-dom";
 import Footer from "./Footer";
+import { Outlet } from "react-router-dom";
 
 const Layout = () => {
   return (
-    <div className="min-h-screen #C1F6ED text-[#02353C] flex flex-col">  
-      <GlobalHeader />
-      <div className="flex flex-1">
+    
+    <div className="flex h-screen overflow-hidden bg-[#C1F6ED] text-[#02353C]">
+      <div className="fixed top-0 left-0 right-0 z-20 pb-5">
+          <GlobalHeader />
+        </div>
+    
+      <div className="mt-16 fixed top-0 left-0 w-64 h-full z-30">
         <Sidebar />
-        <div className="flex flex-col flex-1">
-          <main className="p-4 flex-1 overflow-auto bg-[#F8F9FA]">
-            <Outlet />
-          </main>
-          <Footer />
+      </div>
+
+ 
+      <div className="flex flex-col flex-1 ml-64 h-full">
+        
+      
+        <main className="flex-1 overflow-auto pt-16 px-4 bg-[#F8F9FA]">
+          <Outlet />
+        </main>
+
+        <div>
+        <Footer />
         </div>
       </div>
     </div>

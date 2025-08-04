@@ -1,5 +1,3 @@
-// src/pages/MyMap.jsx
-
 import React, { useState, useRef, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, GeoJSON, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -84,7 +82,7 @@ const MyMap = () => {
   };
 
   return (
-   <div className="flex flex-col gap-4 px-4 h-full">
+   <div className="flex flex-col gap-4 px-4 h-full mt-5">
   {/* Controls */}
   <div className="flex flex-col md:flex-row justify-between items-center gap-4">
     {/* City Dropdown */}
