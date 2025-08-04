@@ -1,0 +1,58 @@
+[
+  {
+    "title": "Urban Development Analysis",
+    "date": "2025-07-25",
+    "status": true,
+    "endpoint": "https://example.com/projects/urban-development",
+    "tags": ["AOI", "Imagery", "NDVI", "LULC", "Report"]
+  },
+  {
+    "title": "Forest Cover Assessment",
+    "date": "2025-06-18",
+    "status": false,
+    "endpoint": "https://example.com/projects/forest-cover",
+    "tags": ["AOI", "Imagery", "NDVI"]
+  },
+  {
+    "title": "Agricultural Monitoring",
+    "date": "2025-05-12",
+    "status": true,
+    "endpoint": "https://example.com/projects/agriculture",
+    "tags": ["AOI", "Imagery", "NDVI", "LULC", "Report"]
+  },
+  {
+    "title": "Coastal Erosion Study",
+    "date": "2025-04-30",
+    "status": false,
+    "endpoint": "https://example.com/projects/coastal-erosion",
+    "tags": ["AOI", "Imagery", "NDVI", "LULC"]
+  },
+  {
+    "title": "Water Quality Analysis",
+    "date": "2025-03-15",
+    "status": true,
+    "endpoint": "https://example.com/projects/water-quality",
+    "tags": ["AOI", "Imagery"]
+  },
+  {
+    "title": "Mining Impact Assessment",
+    "date": "2025-02-28",
+    "status": false,
+    "endpoint": "https://example.com/projects/mining-impact",
+    "tags": ["AOI", "Imagery", "NDVI", "LULC", "Report"]
+  },
+  {
+    "title": "Satellite Image Classification",
+    "date": "2025-01-20",
+    "status": true,
+    "endpoint": "https://example.com/projects/satellite-classification",
+    "tags": ["AOI", "Imagery", "NDVI"]
+  },
+  {
+    "title": "Basic Area Study",
+    "date": "2024-12-15",
+    "status": false,
+    "endpoint": "https://example.com/projects/basic-area-study",
+    "tags": ["AOI"]
+  }
+]

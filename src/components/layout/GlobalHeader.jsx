@@ -20,7 +20,7 @@ export default function GlobalHeader({ title = "Geosavvy", user }) {
     <header
       className="w-full flex items-center justify-between px-6 py-3 shadow-md"
       style={{
-        background: "linear-gradient(to right, #02353C, #2EAF7D)",
+        background: "linear-gradient(to right, #1d2a35, #2EAF7D)",
         color: "#FFFFFF",
       }}
     >

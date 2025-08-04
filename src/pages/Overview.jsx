@@ -35,7 +35,7 @@ export default function Overview() {
 
       {/* Below the piechart+table row: ProjectCard */}
       <div className="bg-white rounded-xl shadow-md p-4">
-        <ProjectCard project={data} />
+        <ProjectCard projects={data.projects} />
       </div>
     </div>
   );
