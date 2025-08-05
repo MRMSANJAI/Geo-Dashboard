@@ -105,7 +105,7 @@ const MyMap = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 px-4 h-full mt-5">
+    <div className="flex flex-col gap-4 px-4 h-100% mt-5">
       {/* Controls */}
       <div className="flex flex-col md:flex-row justify-between items-center gap-4">
         {/* <select

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Calendar } from "lucide-react";
-
+import { Link } from "react-router-dom";
 const TAG_ORDER = ["AOI", "Imagery", "NDVI", "LULC", "Report"];
 
 const tagColors = {
@@ -43,8 +43,8 @@ export default function ProjectCard({projects}) {
 
     if (selectedStatus) {
       out = out.filter((p) => {
-        if (selectedStatus === "ongoing") return p.status === true;
-        if (selectedStatus === "closed") return p.status === false;
+        if (selectedStatus === "ongoing") return p.status.isActive === true;
+        if (selectedStatus === "closed") return p.status.isActive === false;
         return true;
       });
     }
@@ -148,14 +148,16 @@ export default function ProjectCard({projects}) {
               {/* Top row: date left, title right */}
               <div className="flex justify-between items-center mb-2">
 
+    <Link
+      to={`/project-detail/${proj.id}`}
+      className="text-blue-500 hover:underline mt-2 inline-block"
+    >
                 <h3
                   className="text-lg font-bold cursor-pointer text-[#02353C] hover:underline"
-                  onClick={() => {
-                    if (proj.endpoint) window.open(proj.endpoint, "_blank");
-                  }}
                 >
                   {proj.title}
-                </h3>
+                </h3>    </Link>
+
 
                 <div className="flex items-center gap-1 text-sm text-gray-600">
                   <Calendar className="w-4 h-4" />
@@ -183,7 +185,7 @@ export default function ProjectCard({projects}) {
   <div className="flex items-center gap-2">
     <span
       className={`h-3 w-3 rounded-full ${
-        proj.status ? "bg-green-500" : "bg-red-500"
+        proj.status.isActive ? "bg-green-500" : "bg-red-500"
       }`}
     ></span>
     

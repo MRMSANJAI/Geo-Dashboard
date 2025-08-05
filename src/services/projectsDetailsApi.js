@@ -1,8 +1,8 @@
 import ip from "../values/values.js";
 
-export const fetchDashboardData = async () => {
+export const projectDetails = async ({ id }) => {
   try {
-    const response = await fetch(ip+"/api/projects/dashboard", 
+    const response = await fetch(ip+`/api/projects/${id}`, 
       {
       method: "GET",
       headers: {

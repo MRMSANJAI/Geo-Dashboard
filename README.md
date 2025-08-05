@@ -14,3 +14,8 @@ If you are developing a production application, we recommend using TypeScript wi
 {npm i npm i tailwindcss @ailwindcss/vite npm install lucide-react npm install axios npm install jwt-decode@3.1.2 npm install leaflet react-leaflet  npm install recharts npm install react-icons  npm install react-router-dom}
 
 http://35.89.81.175/
+
+
+http://192.168.29.241:8000/api/dashboard-data/
+
+http://192.168.29.152:8000/api/dashboard-data/

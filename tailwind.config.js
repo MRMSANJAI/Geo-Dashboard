@@ -7,6 +7,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        fontFamily: {
+        sans: ['Helvetica', 'Arial', 'sans-serif'],
+      },
     
         primaryGreen: "#28A74E",     // Header background, key accents
         tealBlue: "#2EA7E0",         // Buttons, overlays
