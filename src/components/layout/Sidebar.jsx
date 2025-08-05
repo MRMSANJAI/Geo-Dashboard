@@ -4,11 +4,11 @@ import { Home, TreePine, FileText, MapPin, LineChart, Globe2 } from 'lucide-reac
 
 const Sidebar = () => {
   const navItems = [
-    { path: '/', label: 'Overview', icon: <Home size={18} /> },
-    { path: '/lulc-change', label: 'LULC Change', icon: <MapPin size={18} /> },
-    { path: '/carbon-zones', label: 'Carbon Zones', icon: <LineChart size={18} /> },
-    { path: '/tree-census', label: 'Tree Census', icon: <TreePine size={18} /> },
-    { path: '/reports', label: 'Reports', icon: <FileText size={18} /> },
+    { path: '/', label: 'Dashboard', icon: <Home size={18} /> },
+    // { path: '/lulc-change', label: 'LULC Change', icon: <MapPin size={18} /> },
+    // { path: '/carbon-zones', label: 'Carbon Zones', icon: <LineChart size={18} /> },
+    // { path: '/tree-census', label: 'Tree Census', icon: <TreePine size={18} /> },
+    // { path: '/reports', label: 'Reports', icon: <FileText size={18} /> },
     { path: '/map', label: 'Map View', icon: <Globe2 size={18} /> }, // ✅ New Map Page
   ];
 

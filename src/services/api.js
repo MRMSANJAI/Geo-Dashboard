@@ -1,6 +1,6 @@
 export const fetchDashboardData = async () => {
   try {
-    const response = await fetch("http://192.168.29.152:8000/api/dashboard-data/", 
+    const response = await fetch("http://127.0.0.1:8000/api/dashboard-data/", 
       {
       method: "GET",
       headers: {

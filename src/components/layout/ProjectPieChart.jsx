@@ -1,6 +1,6 @@
 // src/components/layout/ProjectPieChart.jsx
 import React from "react";
-import { PieChart, Pie, Cell, Legend, ResponsiveContainer } from "recharts";
+import { PieChart, Pie, Tooltip, Cell, Legend, ResponsiveContainer } from "recharts";
 
 // Geosavvy palette: Green, Blue, Gray
 const COLORS = ["#28A74E", "#2EA7E0", "#CCCCCC"];
@@ -20,12 +20,13 @@ export default function ProjectPieChart({ chartData }) {
               dataKey="value"
               nameKey="name"
               outerRadius="80%"
-              label
+              // label
             >
               {chartData.map((entry, index) => (
                 <Cell key={index} fill={COLORS[index % COLORS.length]} />
               ))}
             </Pie>
+             <Tooltip />
             <Legend layout="horizontal" verticalAlign="bottom" align="center" />
           </PieChart>
         </ResponsiveContainer>

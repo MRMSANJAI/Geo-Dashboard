@@ -8,6 +8,7 @@ const Layout = () => {
   return (
     
     <div className="flex h-screen overflow-hidden bg-[#C1F6ED] text-[#02353C]">
+      
       <div className="fixed top-0 left-0 right-0 z-20 pb-5">
           <GlobalHeader />
         </div>
