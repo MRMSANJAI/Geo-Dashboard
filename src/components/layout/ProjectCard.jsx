@@ -13,7 +13,7 @@ const tagColors = {
 
 const humanStatus = (statusBool) => (statusBool ? "Ongoing" : "Closed");
 
-export default function ProjectCard({projects}) {
+export default function ProjectCard({ projects }) {
   // const [projects, setProjects] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
@@ -70,8 +70,8 @@ export default function ProjectCard({projects}) {
 
   return (
     // <div className="bg-[#FFFFFF] p-6 rounded-xl shadow-md text-[#333333]">
-    <>  
-    {/* Header Summary */}
+    <>
+      {/* Header Summary */}
       <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-4">
         <div>
           <h2 className="text-2xl font-semibold">Project Overview</h2>
@@ -147,17 +147,14 @@ export default function ProjectCard({projects}) {
             >
               {/* Top row: date left, title right */}
               <div className="flex justify-between items-center mb-2">
-
-    <Link
-      to={`/project-detail/${proj.id}`}
-      className="text-blue-500 hover:underline mt-2 inline-block"
-    >
-                <h3
-                  className="text-lg font-bold cursor-pointer text-[#02353C] hover:underline"
+                <Link
+                  to={`/project-detail/${proj.id}`}
+                  className="text-blue-500 hover:underline mt-2 inline-block"
                 >
-                  {proj.title}
-                </h3>    </Link>
-
+                  <h3 className="text-lg font-bold cursor-pointer text-[#02353C] hover:underline">
+                    {proj.title}
+                  </h3>{" "}
+                </Link>
 
                 <div className="flex items-center gap-1 text-sm text-gray-600">
                   <Calendar className="w-4 h-4" />
@@ -166,32 +163,29 @@ export default function ProjectCard({projects}) {
               </div>
 
               {/* Second row: status badge + tags */}
-<div className="flex flex-wrap justify-between items-center gap-2">
-
-  {/* Tags */}
-  <div className="flex flex-wrap gap-2">
-    {proj.tags?.map((tag, i) => (
-      <span
-        key={i}
-        className={`text-xs font-medium px-2 py-1 rounded-full ${
-          tagColors[tag] || "bg-gray-200 text-gray-700"
-        }`}
-      >
-        {tag}
-      </span>
-    ))}
-  </div>
-    {/* Status Dot */}
-  <div className="flex items-center gap-2">
-    <span
-      className={`h-3 w-3 rounded-full ${
-        proj.status.isActive ? "bg-green-500" : "bg-red-500"
-      }`}
-    ></span>
-    
-  </div>
-
-</div>
+              <div className="flex flex-wrap justify-between items-center gap-2">
+                {/* Tags */}
+                <div className="flex flex-wrap gap-2">
+                  {proj.tags?.map((tag, i) => (
+                    <span
+                      key={i}
+                      className={`text-xs font-medium px-2 py-1 rounded-full ${
+                        tagColors[tag] || "bg-gray-200 text-gray-700"
+                      }`}
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                {/* Status Dot */}
+                <div className="flex items-center gap-2">
+                  <span
+                    className={`h-3 w-3 rounded-full ${
+                      proj.status.isActive ? "bg-green-500" : "bg-red-500"
+                    }`}
+                  ></span>
+                </div>
+              </div>
             </div>
           ))
         ) : (
@@ -200,7 +194,7 @@ export default function ProjectCard({projects}) {
           </div>
         )}
       </div>
-    {/* </div> */}
+      {/* </div> */}
     </>
   );
 }

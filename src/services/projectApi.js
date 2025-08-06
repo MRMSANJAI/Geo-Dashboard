@@ -8,29 +8,3 @@ useEffect(() => {
   setLoading(false);
 }, [id]);
 
-// import ip from "../values/values.js";
-
-
-// const BASE_URL = ip + "/api/projects/dashboard"; // change if needed
-
-// export const getAllProjects = async () => {
-//   try {
-//     const response = await fetch(BASE_URL);
-//     if (!response.ok) throw new Error("Failed to fetch projects");
-//     return await response.json();
-//   } catch (error) {
-//     console.error("Error fetching projects:", error);
-//     return [];
-//   }
-// };
-
-// export const getProjectById = async (id) => {
-//   try {
-//     const response = await fetch(`${BASE_URL}/${id}`);
-//     if (!response.ok) throw new Error("Failed to fetch project");
-//     return await response.json();
-//   } catch (error) {
-//     console.error("Error fetching project:", error);
-//     return null;
-//   }
-// };

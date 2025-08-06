@@ -7,7 +7,7 @@ import {
   MapPin,
   LineChart,
   Globe2,
-} from "lucide-react"; // You can change icon if needed
+} from "lucide-react"; 
 
 const Sidebar = () => {
   const navItems = [

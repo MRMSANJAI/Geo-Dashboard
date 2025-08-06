@@ -29,7 +29,8 @@
     "react-leaflet": "^5.0.0",
     "react-router-dom": "^7.7.1",
     "recharts": "^3.1.0",
-    "tailwindcss": "^4.1.11"
+    "tailwindcss": "^4.1.11",
+    "xmldom": "^0.6.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.30.1",

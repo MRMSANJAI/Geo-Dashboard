@@ -1,55 +1,121 @@
-// src/pages/ProjectDetail.jsx
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { fetchProjectById } from "../services/projectsDetailsApi";
+import StatusIcon from "../components/Projects/StatusIcon";
+import clsx from "clsx";
+import tagColors from "../values/tagColours.js";
+import ProjectSidebar from "../components/Projects/ProjectSidebar.jsx";
 
-const dummyProject = {
-  title: "Urban Development Analysis",
-  date: "2025-07-25",
-  status: true,
-  endpoint: "https://example.com/projects/urban-development",
-  tags: ["AOI", "Imagery", "NDVI", "LULC", "Report"],
-};
+const ProjectDetailPage = () => {
+  const { id } = useParams();
+  const [project, setProject] = useState(null);
 
-export default function ProjectDetail() {
-  const project = dummyProject;
+  useEffect(() => {
+    fetchProjectById(id).then((data) => {
+      setProject(data);
+      setLoading(false);
+    });
+  }, [id]);
 
   return (
-    <div className="max-w-3xl mx-auto p-6 mt-10 bg-white rounded-xl shadow-md">
-      <h1 className="text-3xl font-bold text-gray-800 mb-2">{project.title}</h1>
-      <p className="text-gray-600 text-sm mb-4">Date: {project.date}</p>
+    <div className="flex h-screen">
+    <ProjectSidebar /> 
 
-      <span
-        className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
-          project.status ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-        }`}
-      >
-        {project.status ? "Ongoing" : "Closed"}
-      </span>
+    <div className="flex-1 bg-[#C1F6ED]/20 p-6">
+      {project ? (
+        <ProjectOverview project={project} />
+      ) : (
+        <p className="text-center text-gray-500 mt-10">
+          Loading project details...
+        </p>
+      )}
+    </div>
+  </div>
+);
 
-      <div className="mt-4">
-        <h2 className="text-lg font-semibold text-gray-700">Endpoint:</h2>
-        <a
-          href={project.endpoint}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-600 underline break-words"
-        >
-          {project.endpoint}
-        </a>
+};
+
+const ProjectOverview = ({ project }) => {
+  const name = project?.title ?? "Untitled Project";
+  const description = project?.description ?? "Untitled Project";
+  const startDate = project?.date ?? "Start date not available";
+  const tags = project?.tags ?? [];
+  const checklist = project?.checklist ?? ["NDVI"];
+  const metrics = project?.metrics ?? {
+    imageryCoverage: "N/A",
+    ndviHealth: "N/A",
+    lulcClasses: "N/A",
+    processedTiles: "N/A",
+  };
+
+  return (
+    <div className="max-w-4xl mx-auto p-6 space-y-6 bg-white shadow-xl rounded-2xl mt-10">
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold text-[#02353C]">{name}</h1>
+        <p className="text-sm text-gray-600">Started on: {startDate}</p>
       </div>
 
-      <div className="mt-4">
-        <h2 className="text-lg font-semibold text-gray-700">Tags:</h2>
-        <div className="flex flex-wrap gap-2 mt-1">
-          {project.tags.map((tag, index) => (
+      {/* Tags */}
+      <div className="flex flex-wrap gap-2">
+        {tags.length > 0 ? (
+          tags.map((tag, idx) => (
             <span
-              key={index}
-              className="bg-gray-200 text-gray-800 text-xs px-3 py-1 rounded-full"
+              key={idx}
+              className={clsx(
+                "px-3 py-1 rounded-full text-sm font-medium transition-colors duration-300",
+                tagColors[tag] || "bg-gray-300 text-black"
+              )}
             >
               {tag}
             </span>
-          ))}
-        </div>
+          ))
+        ) : (
+          <span className="text-gray-400 italic">No tags available</span>
+        )}
+      </div>
+
+      {/* Checklist */}
+      <div className="bg-gray-50 p-4 rounded-lg shadow-inner">
+        <h2 className="text-lg font-semibold mb-2 text-[#02353C]">
+          Project Checklist
+        </h2>
+        {checklist.length > 0 ? (
+          <ul className="space-y-2">
+            {checklist.map((item, idx) => (
+              <li
+                key={idx}
+                className="flex items-center justify-between border-b pb-1"
+              >
+                <span>{item?.item ?? "Unnamed item"}</span>
+                <StatusIcon status={item?.status} />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-sm text-gray-500 italic">
+            No checklist items found
+          </p>
+        )}
+      </div>
+
+      {/* Metrics */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+        <MetricCard label="Imagery Coverage" value={metrics.imageryCoverage} />
+        <MetricCard label="NDVI Health" value={metrics.ndviHealth} />
+        <MetricCard label="LULC Classes" value={metrics.lulcClasses} />
+        <MetricCard label="Processed Tiles" value={metrics.processedTiles} />
       </div>
     </div>
   );
-}
+};
+
+// Subcomponent: Metric Card
+const MetricCard = ({ label, value }) => (
+  <div className="bg-[#F0FBF7] p-4 rounded-lg shadow">
+    <p className="text-xs text-gray-500">{label}</p>
+    <p className="text-lg font-bold text-[#2EAF7D]">{value}</p>
+  </div>
+);
+
+export default ProjectDetailPage;
