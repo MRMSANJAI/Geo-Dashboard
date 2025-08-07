@@ -6,10 +6,10 @@ import { useNavigate } from 'react-router-dom';
 
 const tagColors = {
   AOI: 'bg-purple-600 text-white',
-  Imagery: 'bg-green-600 text-white',
+  IMAGERY: 'bg-green-600 text-white',
   NDVI: 'bg-blue-600 text-white',
   LULC: 'bg-yellow-500 text-black',
-  Report: 'bg-red-500 text-white',
+  REPORT: 'bg-red-500 text-white',
 };
 
 const Project = ({ title, date, tags, status, endpoint, onTitleClick }) => {
@@ -29,7 +29,7 @@ const Project = ({ title, date, tags, status, endpoint, onTitleClick }) => {
                 <span>{date}</span>
             </div>
       </div>
-
+          
       {/* Tags + Status */}
       <div className="flex items-center flex-wrap gap-2">
         {tags.map((tag, index) => (

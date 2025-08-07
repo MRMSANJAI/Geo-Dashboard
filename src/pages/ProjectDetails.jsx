@@ -5,10 +5,13 @@ import StatusIcon from "../components/Projects/StatusIcon";
 import clsx from "clsx";
 import tagColors from "../values/tagColours.js";
 import ProjectSidebar from "../components/Projects/ProjectSidebar.jsx";
+import { MapContainer, TileLayer } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
 
 const ProjectDetailPage = () => {
   const { id } = useParams();
   const [project, setProject] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchProjectById(id).then((data) => {
@@ -18,21 +21,19 @@ const ProjectDetailPage = () => {
   }, [id]);
 
   return (
-    <div className="flex h-screen">
-    <ProjectSidebar /> 
-
-    <div className="flex-1 bg-[#C1F6ED]/20 p-6">
-      {project ? (
-        <ProjectOverview project={project} />
-      ) : (
-        <p className="text-center text-gray-500 mt-10">
-          Loading project details...
-        </p>
-      )}
+    <div className="flex min-h-screen">
+      <ProjectSidebar />
+      <div className="flex-1 bg-[#C1F6ED]/20 p-6 ">
+        {loading ? (
+          <p className="text-center text-gray-500 mt-10">
+            Loading project details...
+          </p>
+        ) : (
+          <ProjectOverview project={project} />
+        )}
+      </div>
     </div>
-  </div>
-);
-
+  );
 };
 
 const ProjectOverview = ({ project }) => {
@@ -49,10 +50,10 @@ const ProjectOverview = ({ project }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-6 bg-white shadow-xl rounded-2xl mt-10">
+    <div className=" font-sans max-w-6xl mx-auto p-6 space-y-6 bg-white shadow-xl rounded-2xl mt-5">
       {/* Header */}
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-[#02353C]">{name}</h1>
+        <h1 className="text-2xl font-semibold text-[#02353C]">{name}</h1>
         <p className="text-sm text-gray-600">Started on: {startDate}</p>
       </div>
 
@@ -63,7 +64,7 @@ const ProjectOverview = ({ project }) => {
             <span
               key={idx}
               className={clsx(
-                "px-3 py-1 rounded-full text-sm font-medium transition-colors duration-300",
+                "px-3 py-1 rounded-full text-sm font-normal transition-colors duration-300",
                 tagColors[tag] || "bg-gray-300 text-black"
               )}
             >
@@ -75,28 +76,46 @@ const ProjectOverview = ({ project }) => {
         )}
       </div>
 
-      {/* Checklist */}
-      <div className="bg-gray-50 p-4 rounded-lg shadow-inner">
-        <h2 className="text-lg font-semibold mb-2 text-[#02353C]">
-          Project Checklist
-        </h2>
-        {checklist.length > 0 ? (
-          <ul className="space-y-2">
-            {checklist.map((item, idx) => (
-              <li
-                key={idx}
-                className="flex items-center justify-between border-b pb-1"
-              >
-                <span>{item?.item ?? "Unnamed item"}</span>
-                <StatusIcon status={item?.status} />
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-sm text-gray-500 italic">
-            No checklist items found
-          </p>
-        )}
+      {/* Checklist + Map side by side */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Checklist */}
+        <div className="bg-gray-50 p-4 rounded-lg shadow-inner">
+          <h2 className="text-lg font-semibold mb-2 text-[#02353C]">
+            Project Checklist
+          </h2>
+          {checklist.length > 0 ? (
+            <ul className="space-y-2">
+              {checklist.map((item, idx) => (
+                <li
+                  key={idx}
+                  className="flex items-center justify-between border-b pb-1"
+                >
+                  <span>{item?.item ?? "Unnamed item"}</span>
+                  <StatusIcon status={item?.status} />
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-sm text-gray-500 italic">
+              No checklist items found
+            </p>
+          )}
+        </div>
+
+        {/* Map */}
+        <div className="bg-gray-50 p-2 rounded-lg shadow-inner h-[300px] md:h-[400px]">
+          <MapContainer
+            center={[20.5937, 78.9629]} // Default center: India
+            zoom={4}
+            scrollWheelZoom={false}
+            className="w-full h-full rounded-lg"
+          >
+            <TileLayer
+              attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a>'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+          </MapContainer>
+        </div>
       </div>
 
       {/* Metrics */}
@@ -110,7 +129,6 @@ const ProjectOverview = ({ project }) => {
   );
 };
 
-// Subcomponent: Metric Card
 const MetricCard = ({ label, value }) => (
   <div className="bg-[#F0FBF7] p-4 rounded-lg shadow">
     <p className="text-xs text-gray-500">{label}</p>
@@ -119,3 +137,4 @@ const MetricCard = ({ label, value }) => (
 );
 
 export default ProjectDetailPage;
+

@@ -1,309 +1,191 @@
-// import React, { useState, useRef, useEffect, use } from "react";
-// import {
-//   MapContainer,
-//   TileLayer,
-//   Marker,
-//   Popup,
-//   GeoJSON,
-//   useMap,
-// } from "react-leaflet";
-// import "leaflet/dist/leaflet.css";
-// import * as toGeoJSON from "@tmcw/togeojson";
-// import L from "leaflet";
-// import markerIconPng from "leaflet/dist/images/marker-icon.png";
-// import markerShadowPng from "leaflet/dist/images/marker-shadow.png";
-// import { fetchDashboardData } from "../../services/api";
+import React, { useState, useRef, useEffect, use } from "react";
+import { MapContainer,TileLayer, Marker, Popup, GeoJSON,useMap,} from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import * as toGeoJSON from "@tmcw/togeojson";
+import L from "leaflet";
+import markerIconPng from "leaflet/dist/images/marker-icon.png";
+import markerShadowPng from "leaflet/dist/images/marker-shadow.png";
+import { fetchDashboardData } from "../../services/api";
 
-// // Predefined city coordinates
-// const locationOptions = {
-//   Chennai: [13.0827, 80.2707],
-//   Bengaluru: [12.9716, 77.5946],
-//   Delhi: [28.6139, 77.209],
-//   Mumbai: [19.076, 72.8777],
-//   London: [51.5074, -0.1278],
-// };
+// Predefined city coordinates
+const locationOptions = {
+  Chennai: [13.0827, 80.2707],
+  Bengaluru: [12.9716, 77.5946],
+  Delhi: [28.6139, 77.209],
+  Mumbai: [19.076, 72.8777],
+  London: [51.5074, -0.1278],
+};
 
-// // To update map center when city changes
-// const ChangeMapCenter = ({ center }) => {
-//   const map = useMap();
-//   useEffect(() => {
-//     map.setView(center);
-//   }, [center]);
-//   return null;
-// };
+// To update map center when city changes
+const ChangeMapCenter = ({ center }) => {
+  const map = useMap();
+  useEffect(() => {
+    map.setView(center);
+  }, [center]);
+  return null;
+};
 
-// // Auto-fit bounds when geoData changes
-// const FitBoundsOnGeoJSON = ({ geoData }) => {
-//   const map = useMap();
-
-//   useEffect(() => {
-//     if (!geoData) return;
-
-//     const geojsonLayer = L.geoJSON(geoData);
-//     const bounds = geojsonLayer.getBounds();
-
-//     if (bounds.isValid()) {
-//       map.fitBounds(bounds, { padding: [20, 20] });
-//     }
-//   }, [geoData, map]);
-
-//   return null;
-// };
-
-// const MyMap = () => {
-//   const [selectedCity, setSelectedCity] = useState(0);
-//   const [geoData, setGeoData] = useState(null);
-//   const [fileError, setFileError] = useState("");
-//   const mapRef = useRef();
-
-//   const [mapData, setMapData] = useState(null);
-//   useEffect(() => {
-//     const loadData = async () => {
-//       const data = await fetchDashboardData();
-//       console.log("📦 Data received");
-//       if (data) setMapData(data.projects);
-//     };
-
-//     loadData();
-//   }, []);
-
-//   const center =
-//     mapData && mapData.length > 0
-//       ? mapData[selectedCity].location // Default to first project's location
-//       : locationOptions[selectedCity] || [13.0827, 80.2707]; // Fallback to Chennai
-
-//   const icon = L.icon({
-//     iconUrl: markerIconPng,
-//     shadowUrl: markerShadowPng,
-//     iconSize: [25, 41],
-//     iconAnchor: [12, 41],
-//   });
-
-//   const handleFileUpload = (e) => {
-//     const file = e.target.files[0];
-//     if (!file) return;
-
-//     const reader = new FileReader();
-
-//     reader.onload = (event) => {
-//       const text = event.target.result;
-
-//       try {
-//         if (file.name.endsWith(".kml")) {
-//           const parser = new DOMParser();
-//           const kml = parser.parseFromString(text, "text/xml");
-//           const converted = toGeoJSON.kml(kml);
-//           setGeoData(converted);
-//           setFileError("");
-//         } else if (
-//           file.name.endsWith(".geojson") ||
-//           file.name.endsWith(".json")
-//         ) {
-//           const parsed = JSON.parse(text);
-//           setGeoData(parsed);
-//           setFileError("");
-//         } else {
-//           setFileError("Unsupported file type. Use .kml, .geojson, or .json");
-//         }
-//       } catch (err) {
-//         setFileError("Error parsing file");
-//       }
-//     };
-
-//     reader.readAsText(file);
-//   };
-
-//   return (
-//     <div className="flex flex-col gap-4 px-4 h-100% mt-5">
-//       {/* Controls */}
-//       <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-       
-//         {mapData && (
-//           <select
-//             value={selectedCity}
-//             onChange={(e) => setSelectedCity(e.target.value)}
-//             className="px-3 py-2 rounded-md bg-white text-[#333333] border border-[#2EA7E0] focus:ring-2 focus:ring-[#2EA7E0] transition duration-200"
-//           >
-//             <option value="0">All Projects</option>
-//             {Array.from(new Set(mapData.map((project) => project.title))).map(
-//               (project, index) => (
-//                 <option key={project} value={index}>
-//                   {project}
-//                 </option>
-//               )
-//             )}
-//           </select>
-//         )}
-
-//         <input
-//           type="file"
-//           accept=".kml,.geojson,.json"
-//           onChange={handleFileUpload}
-//           className="text-sm text-[#333333] bg-white border border-[#2EA7E0] px-3 py-2 rounded-md cursor-pointer transition duration-200 hover:bg-[#2EA7E0]/10"
-//         />
-//       </div>
-
-//       {fileError && <p className="text-red-500 text-sm">{fileError}</p>}
-
-//       {/* Map */}
-//       <MapContainer
-//         center={center}
-//         zoom={13}
-//         style={{ height: "75vh", width: "100%" }}
-//         whenCreated={(mapInstance) => {
-//           mapRef.current = mapInstance;
-//         }}
-//       >
-//         <ChangeMapCenter center={center} />
-//         <TileLayer
-//           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-//           attribution='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-//         />
-
-//         {/* City marker */}
-    
-
-//         {mapData &&
-//           mapData.map((project, idx) => (
-//             <Marker key={idx} position={project.location}>
-//               <Popup>
-//                 <strong>{project.title}</strong>
-//                 <br />
-//                 Status: {project.status ? "✅ Active" : "❌ Inactive"}
-//                 <br />
-//                 Date: {project.date}
-//                 <br />
-//                 <a href={project.endpoint} rel="noopener noreferrer">
-//                   View Project
-//                 </a>
-//               </Popup>
-//             </Marker>
-//           ))}
-
-//         {/* GeoJSON */}
-//         {geoData && (
-//           <>
-//             <GeoJSON
-//               key={JSON.stringify(geoData)} // Ensures re-render on new file
-//               data={geoData}
-//               style={{ color: "#4CAF50", weight: 2, fillOpacity: 0.4 }}
-//               onEachFeature={(feature, layer) => {
-//                 const name = feature?.properties?.name || "Unknown";
-//                 layer.bindPopup(name);
-//               }}
-//             />
-//             <FitBoundsOnGeoJSON geoData={geoData} />
-//           </>
-//         )}
-//       </MapContainer>
-//     </div>
-//   );
-// };
-
-// export default MyMap;
-
-import React, { useRef, useState } from 'react';
-import { MapContainer, TileLayer, useMap } from 'react-leaflet';
-import * as toGeoJSON from '@tmcw/togeojson';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
-
-const FitBounds = ({ geoJson }) => {
+// Auto-fit bounds when geoData changes
+const FitBoundsOnGeoJSON = ({ geoData }) => {
   const map = useMap();
 
-  React.useEffect(() => {
-    if (geoJson) {
-      const layer = L.geoJSON(geoJson);
-      map.fitBounds(layer.getBounds());
+  useEffect(() => {
+    if (!geoData) return;
+
+    const geojsonLayer = L.geoJSON(geoData);
+    const bounds = geojsonLayer.getBounds();
+
+    if (bounds.isValid()) {
+      map.fitBounds(bounds, { padding: [20, 20] });
     }
-  }, [geoJson, map]);
+  }, [geoData, map]);
 
   return null;
 };
 
-const KMLMap = () => {
-  const [geoJsonData, setGeoJsonData] = useState(null);
-  const [uploadedLayer, setUploadedLayer] = useState(null);
+const MyMap = () => {
+  const [selectedCity, setSelectedCity] = useState(0);
+  const [geoData, setGeoData] = useState(null);
+  const [fileError, setFileError] = useState("");
   const mapRef = useRef();
-  const fileRef = useRef();
 
-  const handleKmlUpload = (event) => {
-    const file = event.target.files[0];
-    if (!file || !file.name.endsWith('.kml')) {
-      alert('Please upload a valid .kml file');
-      return;
-    }
+  const [mapData, setMapData] = useState(null);
+  useEffect(() => {
+    const loadData = async () => {
+      const data = await fetchDashboardData();
+      console.log("📦 Data received");
+      if (data) setMapData(data.projects);
+    };
+
+    loadData();
+  }, []);
+
+  const center =
+    mapData && mapData.length > 0
+      ? mapData[selectedCity].location // Default to first project's location
+      : locationOptions[selectedCity] || [13.0827, 80.2707]; // Fallback to Chennai
+
+  const icon = L.icon({
+    iconUrl: markerIconPng,
+    shadowUrl: markerShadowPng,
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+  });
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = (e) => {
-      const parser = new DOMParser();
-      const kml = parser.parseFromString(e.target.result, 'text/xml');
-      const converted = toGeoJSON.kml(kml);
-      setGeoJsonData(converted);
+
+    reader.onload = (event) => {
+      const text = event.target.result;
+
+      try {
+        if (file.name.endsWith(".kml")) {
+          const parser = new DOMParser();
+          const kml = parser.parseFromString(text, "text/xml");
+          const converted = toGeoJSON.kml(kml);
+          setGeoData(converted);
+          setFileError("");
+        } else if (
+          file.name.endsWith(".geojson") ||
+          file.name.endsWith(".json")
+        ) {
+          const parsed = JSON.parse(text);
+          setGeoData(parsed);
+          setFileError("");
+        } else {
+          setFileError("Unsupported file type. Use .kml, .geojson, or .json");
+        }
+      } catch (err) {
+        setFileError("Error parsing file");
+      }
     };
+
     reader.readAsText(file);
-  };
-
-  const handleConfirmUpload = () => {
-    if (!geoJsonData) {
-      alert("Please select a KML file first.");
-      return;
-    }
-
-    const confirmUpload = window.confirm("Are you sure you want to upload this file to the server?");
-    if (confirmUpload) {
-      // ✅ API call placeholder
-      alert("KML file uploaded to backend!");
-    }
-  };
-
-  const handleClear = () => {
-    setGeoJsonData(null);
-    setUploadedLayer(null);
-    if (fileRef.current) fileRef.current.value = "";
   };
 
   return (
     <div className="flex flex-col gap-4 px-4 h-100% mt-5">
-      {/* Buttons */}
-      <div className="flex gap-4">
+      {/* Controls */}
+      <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+       
+        {mapData && (
+          <select
+            value={selectedCity}
+            onChange={(e) => setSelectedCity(e.target.value)}
+            className="px-3 py-2 rounded-md bg-white text-[#333333] border border-[#2EA7E0] focus:ring-2 focus:ring-[#2EA7E0] transition duration-200"
+          >
+            <option value="0">All Projects</option>
+            {Array.from(new Set(mapData.map((project) => project.title))).map(
+              (project, index) => (
+                <option key={project} value={index}>
+                  {project}
+                </option>
+              )
+            )}
+          </select>
+        )}
+
         <input
           type="file"
-          accept=".kml"
-          onChange={handleKmlUpload}
-          ref={fileRef}
-          className="text-sm text-gray-700"
+          accept=".kml,.geojson,.json"
+          onChange={handleFileUpload}
+          className="text-sm text-[#333333] bg-white border border-[#2EA7E0] px-3 py-2 rounded-md cursor-pointer transition duration-200 hover:bg-[#2EA7E0]/10"
         />
-        <button
-          onClick={handleConfirmUpload}
-          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-        >
-          Upload to Server
-        </button>
-        <button
-          onClick={handleClear}
-          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-        >
-          Reset
-        </button>
       </div>
+
+      {fileError && <p className="text-red-500 text-sm">{fileError}</p>}
 
       {/* Map */}
       <MapContainer
-        center={[20.5937, 78.9629]}
-        zoom={5}
-        style={{  height: "75vh", width: "100%" }}
-        ref={mapRef}
+        center={center}
+        zoom={13}
+        style={{ height: "75vh", width: "100%" }}
+        whenCreated={(mapInstance) => {
+          mapRef.current = mapInstance;
+        }}
       >
+        <ChangeMapCenter center={center} />
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; OpenStreetMap contributors'
+          attribution='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         />
 
-        {geoJsonData && (
+        {/* City marker */}
+    
+
+        {mapData &&
+          mapData.map((project, idx) => (
+            <Marker key={idx} position={project.location}>
+              <Popup>
+                <strong>{project.title}</strong>
+                <br />
+                Status: {project.status ? "✅ Active" : "❌ Inactive"}
+                <br />
+                Date: {project.date}
+                <br />
+                <a href={project.endpoint} rel="noopener noreferrer">
+                  View Project
+                </a>
+              </Popup>
+            </Marker>
+          ))}
+
+        {/* GeoJSON */}
+        {geoData && (
           <>
-            <FitBounds geoJson={geoJsonData} />
-            <GeoJSONComponent data={geoJsonData} />
+            <GeoJSON
+              key={JSON.stringify(geoData)} // Ensures re-render on new file
+              data={geoData}
+              style={{ color: "#4CAF50", weight: 2, fillOpacity: 0.4 }}
+              onEachFeature={(feature, layer) => {
+                const name = feature?.properties?.name || "Unknown";
+                layer.bindPopup(name);
+              }}
+            />
+            <FitBoundsOnGeoJSON geoData={geoData} />
           </>
         )}
       </MapContainer>
@@ -311,30 +193,4 @@ const KMLMap = () => {
   );
 };
 
-const GeoJSONComponent = ({ data }) => {
-  const map = useMap();
-
-  React.useEffect(() => {
-    const layer = L.geoJSON(data, {
-      onEachFeature: (feature, layer) => {
-        const name = feature?.properties?.name || "Feature";
-        layer.bindPopup(name);
-      },
-      style: {
-        color: "#2EAF7D",
-        weight: 2,
-        opacity: 1,
-      },
-    });
-
-    layer.addTo(map);
-
-    return () => {
-      map.removeLayer(layer);
-    };
-  }, [data, map]);
-
-  return null;
-};
-
-export default KMLMap;
+export default MyMap;

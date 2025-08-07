@@ -1,36 +1,16 @@
 import React from "react";
 import { NavLink, useParams } from "react-router-dom";
-import {
-  Home,
-  MapPin,
-  LineChart,
-  FileText,
-} from "lucide-react";
+import {Home,MapPin, LineChart,FileText,} from "lucide-react";
+
 
 const ProjectSidebar = () => {
   const { id } = useParams(); // Access dynamic route param
 
   const navItems = [
-    {
-      path: "/",
-      label: "Dashboard",
-      icon: <Home size={18} />,
-    },
-    {
-      path: `/project-detail/${id}/aoi`,
-      label: "AOI",
-      icon: <MapPin size={18} />,
-    },
-    {
-      path: `/project-detail/${id}/mapping`,
-      label: "Mapping",
-      icon: <LineChart size={18} />,
-    },
-    {
-      path: `/project-detail/${id}/report`,
-      label: "Report",
-      icon: <FileText size={18} />,
-    },
+    {path: "/", label: "Dashboard",  icon: <Home size={18} />,  },
+    {path: `/project-detail/${id}/aoi`, label: "AOI",icon: <MapPin size={18} />,},
+    { path: `/project-detail/${id}/mapping`,label: "Project", icon: <LineChart size={18} />, },
+    {path: `/project-detail/${id}/report`, label: "Report",icon: <FileText size={18} />,},
   ];
 
   return (

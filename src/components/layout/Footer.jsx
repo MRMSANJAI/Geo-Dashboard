@@ -14,7 +14,7 @@ const Footer = () => {
               info@geosavvy.in
             </a>
           </p> */}
-          <p className=" font-medium text-gray-700 pt-2">
+          <p className=" font-medium text-gray-800 pt-2">
             © {new Date().getFullYear()}{" "}
             <span className="font-semibold">Geosavvy</span>. All Rights
             Reserved.
