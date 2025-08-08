@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const ImageryUpload = () => {
+const ProjectImagery = () => {
   const [mode, setMode] = useState("satellite");
 
   const [satelliteFiles, setSatelliteFiles] = useState({
@@ -16,11 +16,31 @@ const ImageryUpload = () => {
     setSatelliteFiles({ ...satelliteFiles, [band]: file });
   };
 
-  const allSatelliteFilesSelected = Object.values(satelliteFiles).every(Boolean);
+  const allSatelliteFilesSelected =
+    Object.values(satelliteFiles).every(Boolean);
+
+  // Reset function
+  const handleReset = () => {
+    setMode("satellite"); // If you want to always go back to Satellite
+    setSatelliteFiles({
+      red: null,
+      green: null,
+      blue: null,
+      nir: null,
+    });
+    setDroneFile(null);
+
+    // Reset input file elements
+    document.querySelectorAll('input[type="file"]').forEach((input) => {
+      input.value = "";
+    });
+  };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Select Imagery Type</h1>
+    <div className="font-sans min-h-screen bg-gray-100 p-6 rounded-lg shadow-initial">
+      <h1 className="text-2xl font-bold text-gray-800 mb-6">
+        Select Imagery Type
+      </h1>
 
       {/* Radio buttons */}
       <div className="flex gap-4 mb-6">
@@ -47,58 +67,74 @@ const ImageryUpload = () => {
       </div>
 
       {/* Satellite card */}
-      <div
-        className={`p-6 rounded-xl shadow-md mb-6 ${
-          mode === "satellite" ? "bg-white" : "bg-gray-200 opacity-60"
-        }`}
-      >
-        <h2 className="text-xl font-semibold mb-4">Satellite Imagery</h2>
-        <div className="grid grid-cols-2 gap-4">
-          {["red", "green", "blue", "nir"].map((band) => (
-            <div key={band}>
-              <label className="block mb-1 capitalize">{band} band</label>
-              <input
-                type="file"
-                accept=".tif,.tiff"
-                onChange={(e) => handleSatelliteFileChange(band, e.target.files[0])}
-                disabled={mode !== "satellite"}
-                className="w-full border border-gray-300 rounded px-3 py-2"
-              />
-            </div>
-          ))}
+      {mode === "satellite" && (
+        <div className="p-6 rounded-xl shadow-md mb-6 bg-white">
+          <h2 className="text-xl font-semibold mb-4">Satellite Imagery</h2>
+          <div className="grid grid-cols-2 gap-4">
+            {["red", "green", "blue", "nir"].map((band) => (
+              <div key={band}>
+                <label className="block mb-1 capitalize">{band} band</label>
+                <input
+                  type="file"
+                  accept=".tif,.tiff"
+                  onChange={(e) =>
+                    handleSatelliteFileChange(band, e.target.files[0])
+                  }
+                  className="w-full border border-gray-300 rounded px-3 py-2"
+                />
+              </div>
+            ))}
+          </div>
+          <div className="flex gap-3 mt-4">
+            <button
+              className={`px-4 py-2 text-white rounded ${
+                allSatelliteFilesSelected
+                  ? "bg-blue-600 hover:bg-blue-700"
+                  : "bg-gray-400 cursor-not-allowed"
+              }`}
+              disabled={!allSatelliteFilesSelected}
+            >
+              Upload Satellite Imagery
+            </button>
+            <button
+              onClick={handleReset}
+              className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded"
+            >
+              Reset
+            </button>
+          </div>
         </div>
-        {mode === "satellite" && allSatelliteFilesSelected && (
-          <button className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-            Upload Satellite Imagery
-          </button>
-        )}
-      </div>
+      )}
 
-      {/* Drone card */}
-      <div
-        className={`p-6 rounded-xl shadow-md ${
-          mode === "drone" ? "bg-white" : "bg-gray-200 opacity-60"
-        }`}
-      >
-        <h2 className="text-xl font-semibold mb-4">Drone Imagery</h2>
-        <div className="mb-4">
-          <label className="block mb-1">Combined Drone Image</label>
-          <input
-            type="file"
-            accept=".tif,.tiff,.jpg,.png"
-            onChange={(e) => setDroneFile(e.target.files[0])}
-            disabled={mode !== "drone"}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
+      {mode === "drone" && (
+        <div className="p-6 rounded-xl shadow-md bg-white">
+          <h2 className="text-xl font-semibold mb-4">Drone Imagery</h2>
+          <div className="mb-4">
+            <label className="block mb-1">Combined Drone Image</label>
+            <input
+              type="file"
+              accept=".tif,.tiff,.jpg,.png"
+              onChange={(e) => setDroneFile(e.target.files[0])}
+              className="w-full border border-gray-300 rounded px-3 py-2"
+            />
+          </div>
+          <div className="flex gap-3 mt-2">
+            <button className={`px-4 py-2 text-white rounded ${droneFile
+                  ? "bg-blue-600 hover:bg-blue-700"
+                  : "bg-gray-400 cursor-not-allowed"
+              }`}
+              disabled={!droneFile}
+            >
+              Upload Drone Imagery
+            </button>
+            <button onClick={handleReset} className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded">
+              Reset
+            </button>
+          </div>
         </div>
-        {mode === "drone" && droneFile && (
-          <button className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-            Upload Drone Imagery
-          </button>
-        )}
-      </div>
+      )}
     </div>
   );
 };
 
-export default ImageryUpload;
+export default ProjectImagery;

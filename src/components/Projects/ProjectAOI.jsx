@@ -64,7 +64,7 @@ export default function ProjectAOI() {
   //className="bg-gray-50 p-2 rounded-lg shadow-inner
 
   return (
-    <div className="flex flex-col font-sans gap-4 px-8 h-100% mt-5 bg-gray-100 rounded-lg shadow-inner p-2">
+    <div className="flex flex-col font-sans gap-4 px-8 h-100% mt-5 bg-gray-100 rounded-lg shadow-inner p-4">
       {/* Buttons */}
       <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-2">
         <input

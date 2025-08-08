@@ -72,7 +72,7 @@ export default function ProjectCard({ projects }) {
     // <div className="bg-[#FFFFFF] p-6 rounded-xl shadow-md text-[#333333]">
     <>
       {/* Header Summary */}
-      <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-4">
+      <div className="  flex flex-col md:flex-row justify-between items-start gap-4 mb-4">
         <div>
           <h2 className="text-2xl font-semibold">Project Overview</h2>
           <p className="text-sm font-medium text-gray-700 whitespace-nowrap">

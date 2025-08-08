@@ -1,8 +1,6 @@
-// src/components/layout/ProjectPieChart.jsx
 import React from "react";
 import { PieChart, Pie, Tooltip, Cell, Legend, ResponsiveContainer } from "recharts";
 
-// Geosavvy palette: Green, Blue, Gray
 const COLORS = ["#28A74E", "#2EA7E0", "#CCCCCC"];
 
 export default function ProjectPieChart({ chartData }) {

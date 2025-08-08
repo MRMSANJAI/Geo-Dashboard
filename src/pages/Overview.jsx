@@ -63,7 +63,7 @@ export default function Overview() {
 
   return (
     <>
-      <div className="flex justify-between items-center p-4 bg-white shadow-md z-10 relative">
+      <div className=" font-sans flex justify-between items-center p-4 bg-white shadow-md z-10 relative">
         <h1 className="text-xl font-semibold">Dashboard</h1>
         <button
           type="button"
