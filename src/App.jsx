@@ -7,6 +7,7 @@ import ProjectDetailLayout from './components/Projects/ProjectDetailLayout';
 import ProjectOverview from './components/Projects/ProjectOverview';
 import ProjectReport from './components/Projects/ProjectReport';
 import ProjectImagery from './components/Projects/ProjectImagery';
+import WMSLayer from './components/ProjectWmslayer';
 
 export default function App() {
   return (
@@ -22,6 +23,8 @@ export default function App() {
           <Route path="aoi/:pid" element={<ProjectAOI />} />
           <Route path="report" element={<ProjectReport />} />
           <Route path="imagery" element={< ProjectImagery/>} />
+          <Route path="wmslayer" element={<WMSLayer />} /> {/* WMS Layer map */}
+
        </Route>
 
        

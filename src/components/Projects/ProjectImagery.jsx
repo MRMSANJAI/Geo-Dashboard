@@ -1,6 +1,9 @@
 import React, { useState } from "react";
-
+import { useParams } from "react-router-dom";
+import { uploadSatelliteImagery, uploadDroneImagery } from "../../services/uploadimagnery.js"
 const ProjectImagery = () => {
+  const { pid } = useParams(); // Assuming route contains :pid
+
   const [mode, setMode] = useState("satellite");
   const [satelliteFiles, setSatelliteFiles] = useState({
     red: null,
@@ -10,25 +13,66 @@ const ProjectImagery = () => {
   });
   const [droneFile, setDroneFile] = useState(null);
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
   const handleSatelliteFileChange = (band, file) => {
-    setSatelliteFiles(prev => ({ ...prev, [band]: file }));
+    setSatelliteFiles((prev) => ({ ...prev, [band]: file }));
   };
 
   const handleDroneFileChange = (file) => {
-    setDroneFile(file);
+    setDroneFile(file);  
   };
 
   const handleReset = () => {
     setMode("satellite");
     setSatelliteFiles({ red: null, green: null, blue: null, nir: null });
     setDroneFile(null);
+    setSuccessMessage("");
+    setErrorMessage("");
   };
 
   const allSatelliteFilesSelected = Object.values(satelliteFiles).slice(0, 3).every(Boolean);
 
+  const handleUploadSatellite = async () => {
+    setIsLoading(true);
+    setSuccessMessage("");
+    setErrorMessage("");
+    try {
+      const res = await uploadSatelliteImagery({ projectId: pid, files: satelliteFiles });
+      setSuccessMessage("✅ Satellite imagery uploaded successfully!");
+      console.log(res);
+    } catch (err) {
+      setErrorMessage("❌ Failed to upload satellite imagery.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleUploadDrone = async () => {
+    setIsLoading(true);
+    setSuccessMessage("");
+    setErrorMessage("");
+    try {
+      const res = await uploadDroneImagery({ projectId: pid, file: droneFile });
+      setSuccessMessage("✅ Drone imagery uploaded successfully!");
+      console.log(res);
+    } catch (err) {
+      setErrorMessage("❌ Failed to upload drone imagery.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="font-sans min-h-screen bg-gray-50 p-6">
       <h1 className="text-2xl font-bold text-gray-800 mb-6">Select Imagery Type</h1>
+
+      {/* Status Messages */}
+      {isLoading && <div className="bg-blue-100 text-blue-800 px-4 py-2 rounded mb-3">🔄 Uploading...</div>}
+      {successMessage && <div className="bg-green-100 text-green-800 px-4 py-2 rounded mb-3">{successMessage}</div>}
+      {errorMessage && <div className="bg-red-100 text-red-800 px-4 py-2 rounded mb-3">{errorMessage}</div>}
 
       {/* Mode selection */}
       <div className="flex gap-6 mb-6">
@@ -76,6 +120,7 @@ const ProjectImagery = () => {
 
           <div className="flex gap-3 mt-6">
             <button
+              onClick={handleUploadSatellite}
               className={`px-5 py-2 text-white text-sm font-medium rounded-lg shadow-sm transition 
                 ${allSatelliteFilesSelected ? "bg-blue-600 hover:bg-blue-700" : "bg-gray-300 cursor-not-allowed"}`}
               disabled={!allSatelliteFilesSelected}
@@ -108,6 +153,7 @@ const ProjectImagery = () => {
 
           <div className="flex gap-3 mt-4">
             <button
+              onClick={handleUploadDrone}
               className={`px-5 py-2 text-white text-sm font-medium rounded-lg shadow-sm transition 
                 ${droneFile ? "bg-blue-600 hover:bg-blue-700" : "bg-gray-300 cursor-not-allowed"}`}
               disabled={!droneFile}
