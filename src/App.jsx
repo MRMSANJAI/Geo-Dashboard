@@ -17,9 +17,9 @@ export default function App() {
         <Route path="map" element={<MyMap />} />
 
         {/* All project detail subpages share ProjectSidebar */}
-        <Route path="project-detail/:id" element={<ProjectDetailLayout />}>
+        <Route path="/project-detail/:id" element={<ProjectDetailLayout />}>
           <Route index element={<ProjectOverview />} />  {/* /project-detail/:id */}
-          <Route path="aoi" element={<ProjectAOI />} />
+          <Route path="aoi/:pid" element={<ProjectAOI />} />
           <Route path="report" element={<ProjectReport />} />
           <Route path="imagery" element={< ProjectImagery/>} />
        </Route>

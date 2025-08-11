@@ -1,37 +1,525 @@
-{
-  "totalProjects": 1,
-  "ongoingProjects": 5,
-  "closedProjects": 7,
+{"data": {
+  "totalProjects": 13,
+  "ongoingProjects": 10,
+  "closedProjects": 3,
   "chartData": [
-    { "name": "Total", "value": 12 },
-    { "name": "Ongoing", "value": 5 },
-    { "name": "Closed", "value": 7 }
+    {
+      "name": "Ongoing",
+      "value": 10
+    },
+    {
+      "name": "Closed",
+      "value": 3
+    }
   ],
   "projects": [
     {
-      "name": "Project A",
-      "status": "Ongoing",
-      "startDate": "2023-01-15",
-      "endDate": "2023-03-20"
+      "id": 1,
+      "title": "Project 1",
+      "date": "2025-08-01",
+      "status": {
+        "value": "ongoing",
+        "label": "Ongoing",
+        "isActive": true
+      },
+      "endpoint": "/api/projects/1/",
+      "tags": [
+        "NDVI",
+        "Agriculture"
+      ],
+      "checklist": [
+        {
+          "item": "AOI",
+          "status": "Incomplete"
+        },
+        {
+          "item": "NDVI",
+          "status": "Complete"
+        },
+        {
+          "item": "IMAGERY",
+          "status": "Incomplete"
+        },
+        {
+          "item": "LULC",
+          "status": "Incomplete"
+        },
+        {
+          "item": "REPORT",
+          "status": "Incomplete"
+        }
+      ],
+      "location": [8.99, 77.99],
+      "description": "This is description"
     },
     {
-      "name": "Project B",
-      "status": "Ongoing",
-      "startDate": "2023-02-10",
-      "endDate": "2023-04-25"
+      "id": 4,
+      "title": "Chennai Project",
+      "date": "2025-08-03",
+      "status": {
+        "value": "closed",
+        "label": "Closed",
+        "isActive": false
+      },
+      "endpoint": "/api/projects/4/",
+      "tags": [
+        "city",
+        "developement"
+      ],
+      "checklist": [
+        {
+          "item": "AOI",
+          "status": "Incomplete"
+        },
+        {
+          "item": "NDVI",
+          "status": "Incomplete"
+        },
+        {
+          "item": "IMAGERY",
+          "status": "Incomplete"
+        },
+        {
+          "item": "LULC",
+          "status": "Incomplete"
+        },
+        {
+          "item": "REPORT",
+          "status": "Incomplete"
+        }
+      ],
+      "location": [8.99, 77.99],
+      "description": "This is description"
     },
     {
-      "name": "Project C",
-      "status": "Closed",
-      "startDate": "2023-01-05",
-      "endDate": "2023-02-15"
+      "id": 3,
+      "title": "home project",
+      "date": "2025-08-03",
+      "status": {
+        "value": "closed",
+        "label": "Closed",
+        "isActive": false
+      },
+      "endpoint": "/api/projects/3/",
+      "tags": [
+        "boundary",
+        "home"
+      ],
+      "checklist": [
+        {
+          "item": "AOI",
+          "status": "Incomplete"
+        },
+        {
+          "item": "NDVI",
+          "status": "Incomplete"
+        },
+        {
+          "item": "IMAGERY",
+          "status": "Incomplete"
+        },
+        {
+          "item": "LULC",
+          "status": "Incomplete"
+        },
+        {
+          "item": "REPORT",
+          "status": "Incomplete"
+        }
+      ],
+      "location": [8.99, 77.99],
+      "description": "This is description"
     },
     {
-      "name": "Project D",
-      "status": "Ongoing",
-      "startDate": "2023-06-18",
-      "endDate": "2023-09-30"
+      "id": 2,
+      "title": "Amir Home",
+      "date": "2025-08-03",
+      "status": {
+        "value": "closed",
+        "label": "Closed",
+        "isActive": false
+      },
+      "endpoint": "/api/projects/2/",
+      "tags": [
+        "home",
+        "survey"
+      ],
+      "checklist": [
+        {
+          "item": "AOI",
+          "status": "Incomplete"
+        },
+        {
+          "item": "NDVI",
+          "status": "Incomplete"
+        },
+        {
+          "item": "IMAGERY",
+          "status": "Incomplete"
+        },
+        {
+          "item": "LULC",
+          "status": "Incomplete"
+        },
+        {
+          "item": "REPORT",
+          "status": "Incomplete"
+        }
+      ],
+      "location": [8.99, 77.99],
+      "description": "This is description"
+    },
+    {
+      "id": 5,
+      "title": "ABD",
+      "date": "2025-08-05",
+      "status": {
+        "value": "ongoing",
+        "label": "Ongoing",
+        "isActive": true
+      },
+      "endpoint": "/api/projects/5/",
+      "tags": [
+        "fibre",
+        "cable"
+      ],
+      "checklist": [
+        {
+          "item": "AOI",
+          "status": "Incomplete"
+        },
+        {
+          "item": "NDVI",
+          "status": "Incomplete"
+        },
+        {
+          "item": "IMAGERY",
+          "status": "Incomplete"
+        },
+        {
+          "item": "LULC",
+          "status": "Incomplete"
+        },
+        {
+          "item": "REPORT",
+          "status": "Incomplete"
+        }
+      ],
+      "location": [8.99, 77.99],
+      "description": "field"
+    },
+    {
+      "id": 6,
+      "title": "Railway project",
+      "date": "2025-08-05",
+      "status": {
+        "value": "ongoing",
+        "label": "Ongoing",
+        "isActive": true
+      },
+      "endpoint": "/api/projects/6/",
+      "tags": [
+        "AOI",
+        "NDVI"
+      ],
+      "checklist": [
+        {
+          "item": "AOI",
+          "status": "Incomplete"
+        },
+        {
+          "item": "NDVI",
+          "status": "Incomplete"
+        },
+        {
+          "item": "IMAGERY",
+          "status": "Incomplete"
+        },
+        {
+          "item": "LULC",
+          "status": "Incomplete"
+        },
+        {
+          "item": "REPORT",
+          "status": "Incomplete"
+        }
+      ],
+      "location": [8.69806408507647, 77.7157066547265],
+      "description": "railway"
+    },
+    {
+      "id": 7,
+      "title": "Location kml",
+      "date": "2025-08-05",
+      "status": {
+        "value": "ongoing",
+        "label": "Ongoing",
+        "isActive": true
+      },
+      "endpoint": "/api/projects/7/",
+      "tags": [
+        "kml"
+      ],
+      "checklist": [
+        {
+          "item": "AOI",
+          "status": "Incomplete"
+        },
+        {
+          "item": "NDVI",
+          "status": "Incomplete"
+        },
+        {
+          "item": "IMAGERY",
+          "status": "Incomplete"
+        },
+        {
+          "item": "LULC",
+          "status": "Incomplete"
+        },
+        {
+          "item": "REPORT",
+          "status": "Incomplete"
+        }
+      ],
+      "location": [8.78969577196752, 77.8115509278985],
+      "description": "kml"
+    },
+    {
+      "id": 8,
+      "title": "loc get",
+      "date": "2025-08-05",
+      "status": {
+        "value": "ongoing",
+        "label": "Ongoing",
+        "isActive": true
+      },
+      "endpoint": "/api/projects/8/",
+      "tags": [
+        "AOI",
+        "NDVI"
+      ],
+      "checklist": [
+        {
+          "item": "AOI",
+          "status": "Incomplete"
+        },
+        {
+          "item": "NDVI",
+          "status": "Incomplete"
+        },
+        {
+          "item": "IMAGERY",
+          "status": "Incomplete"
+        },
+        {
+          "item": "LULC",
+          "status": "Incomplete"
+        },
+        {
+          "item": "REPORT",
+          "status": "Incomplete"
+        }
+      ],
+      "location": [8.69806408507647, 77.7157066547265],
+      "description": "centroid"
+    },
+    {
+      "id": 9,
+      "title": "tamin",
+      "date": "2025-08-05",
+      "status": {
+        "value": "ongoing",
+        "label": "Ongoing",
+        "isActive": true
+      },
+      "endpoint": "/api/projects/9/",
+      "tags": [
+        "AOI",
+        "NDVI"
+      ],
+      "checklist": [
+        {
+          "item": "AOI",
+          "status": "Incomplete"
+        },
+        {
+          "item": "NDVI",
+          "status": "Incomplete"
+        },
+        {
+          "item": "IMAGERY",
+          "status": "Incomplete"
+        },
+        {
+          "item": "LULC",
+          "status": "Incomplete"
+        },
+        {
+          "item": "REPORT",
+          "status": "Incomplete"
+        }
+      ],
+      "location": [8.99, 77.99],
+      "description": "quarry"
+    },
+    {
+      "id": 10,
+      "title": "Navami Ganga",
+      "date": "2025-08-06",
+      "status": {
+        "value": "ongoing",
+        "label": "Ongoing",
+        "isActive": true
+      },
+      "endpoint": "/api/projects/10/",
+      "tags": [
+        "NDVI",
+        "AOI",
+        "Imagery",
+        "LULC",
+        "Report"
+      ],
+      "checklist": [
+        {
+          "item": "AOI",
+          "status": "Complete"
+        },
+        {
+          "item": "NDVI",
+          "status": "Complete"
+        },
+        {
+          "item": "IMAGERY",
+          "status": "Complete"
+        },
+        {
+          "item": "LULC",
+          "status": "Complete"
+        },
+        {
+          "item": "REPORT",
+          "status": "Complete"
+        }
+      ],
+      "location": [8.78969577196752, 77.8115509278985],
+      "description": "River cleaning project"
+    },
+    {
+      "id": 12,
+      "title": "Tirunelveli City Project",
+      "date": "2025-08-06",
+      "status": {
+        "value": "ongoing",
+        "label": "Ongoing",
+        "isActive": true
+      },
+      "endpoint": "/api/projects/12/",
+      "tags": [
+        "AOI"
+      ],
+      "checklist": [
+        {
+          "item": "AOI",
+          "status": "Complete"
+        },
+        {
+          "item": "NDVI",
+          "status": "Incomplete"
+        },
+        {
+          "item": "IMAGERY",
+          "status": "Incomplete"
+        },
+        {
+          "item": "LULC",
+          "status": "Incomplete"
+        },
+        {
+          "item": "REPORT",
+          "status": "Incomplete"
+        }
+      ],
+      "location": [8.99, 77.99],
+      "description": "smart city"
+    },
+    {
+      "id": 11,
+      "title": "sample json",
+      "date": "2025-08-06",
+      "status": {
+        "value": "ongoing",
+        "label": "Ongoing",
+        "isActive": true
+      },
+      "endpoint": "/api/projects/11/",
+      "tags": [
+        "aoi"
+      ],
+      "checklist": [
+        {
+          "item": "AOI",
+          "status": "Complete"
+        },
+        {
+          "item": "NDVI",
+          "status": "Incomplete"
+        },
+        {
+          "item": "IMAGERY",
+          "status": "Incomplete"
+        },
+        {
+          "item": "LULC",
+          "status": "Incomplete"
+        },
+        {
+          "item": "REPORT",
+          "status": "Incomplete"
+        }
+      ],
+      "location": [8.69806408507647, 77.7157066547265],
+      "description": "sa"
+    },
+    {
+      "id": 13,
+      "title": "new",
+      "date": "2025-08-08",
+      "status": {
+        "value": "ongoing",
+        "label": "Ongoing",
+        "isActive": true
+      },
+      "endpoint": "/api/projects/13/",
+      "tags": [
+        "AOI",
+        "NDVI"
+      ],
+      "checklist": [
+        {
+          "item": "AOI",
+          "status": "Incomplete"
+        },
+        {
+          "item": "NDVI",
+          "status": "Incomplete"
+        },
+        {
+          "item": "IMAGERY",
+          "status": "Incomplete"
+        },
+        {
+          "item": "LULC",
+          "status": "Incomplete"
+        },
+        {
+          "item": "REPORT",
+          "status": "Incomplete"
+        }
+      ],
+      "location": [8.99, 77.99],
+      "description": "pro"
     }
   ]
 }
-
+}

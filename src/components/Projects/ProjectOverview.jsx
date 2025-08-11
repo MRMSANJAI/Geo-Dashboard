@@ -1,12 +1,24 @@
 import React from "react";
 import { useOutletContext } from "react-router-dom";
 import clsx from "clsx";
-import { MapContainer, TileLayer } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import StatusIcon from "./StatusIcon.jsx";
 import tagColors from "../../values/tagColours.js";
+import { useMap } from "react-leaflet";
+import { useEffect } from "react";
 
+const ZoomToLocation = ({ location, zoom = 14 }) => {
+  const map = useMap();
 
+  useEffect(() => {
+    if (Array.isArray(location) && location.length === 2) {
+      map.setView(location, zoom);
+    }
+  }, [location, zoom, map]);
+
+  return null;
+};
 
 export default function ProjectOverview() {
   const { project } = useOutletContext();
@@ -16,6 +28,7 @@ export default function ProjectOverview() {
   const startDate = project?.date ?? "Start date not available";
   const tags = project?.tags ?? [];
   const checklist = project?.checklist ?? [];
+  const location = project?.location ?? [];
   const metrics = project?.metrics ?? { 
      imageryCoverage: "N/A",
      ndviHealth: "N/A",
@@ -75,6 +88,14 @@ export default function ProjectOverview() {
               attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a>'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
+            {location.length > 0 && (
+              <>
+              <ZoomToLocation location={location} zoom={12} />
+              <Marker position={location}>
+                <Popup>Project Location</Popup>
+              </Marker>
+            </>
+            )}
           </MapContainer>
         </div>
       </div>

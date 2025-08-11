@@ -7,6 +7,25 @@ import markerIconPng from "leaflet/dist/images/marker-icon.png";
 import markerShadowPng from "leaflet/dist/images/marker-shadow.png";
 import { fetchDashboardData } from "../../services/api";
 
+
+const greenIcon = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
+const redIcon = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
 // Predefined city coordinates
 const locationOptions = {
   Chennai: [13.0827, 80.2707],
@@ -158,7 +177,7 @@ const MyMap = () => {
 
         {mapData &&
           mapData.map((project, idx) => (
-            <Marker key={idx} position={project.location}>
+            <Marker key={idx} position={project.location} icon={project.status.isActive ? greenIcon : redIcon}>
               <Popup>
                 <strong>{project.title}</strong>
                 <br />
@@ -166,7 +185,7 @@ const MyMap = () => {
                 <br />
                 Date: {project.date}
                 <br />
-                <a href={project.endpoint} rel="noopener noreferrer">
+                <a href={`/project-detail/${project.id}`} rel="noopener noreferrer">
                   View Project
                 </a>
               </Popup>

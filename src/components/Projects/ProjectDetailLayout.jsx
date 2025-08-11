@@ -35,7 +35,7 @@ export default function ProjectDetailLayout() {
       </div>
 
       {/* Main content area */}
-      <div className="flex-1 md:ml-64 min-h-screen bg-[#C1F6ED]/20 p-6 ">
+      <div style={{ height: "100vh"}} className="flex-1 md:ml-64 min-h-screen bg-[#C1F6ED]/20 p-6 ">
         {loading ? ( <p className="text-gray-500 text-center mt-10">Loading project...</p>
         ) : (
           <Outlet context={{ project }} />
