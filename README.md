@@ -19,3 +19,5 @@ http://35.89.81.175/
 http://192.168.29.241:8000/api/dashboard-data/
 
 http://192.168.29.152:8000/api/dashboard-data/
+
+http://localhost:5173/project-detail/16/wmslayer

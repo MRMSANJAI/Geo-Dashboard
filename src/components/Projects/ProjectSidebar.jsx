@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink, useParams } from "react-router-dom";
-import {Home,MapPin,  Image as ImageIcon, LineChart, FileText,} from "lucide-react";
+import {Home,MapPin,  Image as ImageIcon, LineChart, FileText,TreeDeciduous} from "lucide-react";
 
 
 const ProjectSidebar = () => {
@@ -11,6 +11,7 @@ const ProjectSidebar = () => {
     {path: `/project-detail/${id}`, label: "Project Details", icon: <LineChart size={18} />,},
     {path: `aoi/${id}`, label: "AOI", icon: <MapPin size={18} />,},
     {path: `/project-detail/${id}/imagery`, label: "Imagery", icon: <ImageIcon size={18} />, },
+    {path: `/project-detail/${id}/lulc`, label: "LULC", icon: < TreeDeciduous size={18} />,}, 
     {path: `/project-detail/${id}/report`, label: "Report",icon: <FileText size={18} />,},
   ];
 
