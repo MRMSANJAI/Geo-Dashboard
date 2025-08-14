@@ -129,7 +129,7 @@ export default function ProjectAOI() {
   //className="bg-gray-50 p-2 rounded-lg shadow-inner
 
   return (
-    <div className="flex flex-col font-sans gap-4 h-100% bg-gray-100 rounded-lg shadow-inner p-4">
+    <div className="flex flex-col font-sans gap-4 px-8 h-100% bg-gray-100 rounded-lg shadow-inner p-4">
        {/* Modal */}
         {isModalOpen && (
             <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/30 backdrop-blur-sm z-index-40">
