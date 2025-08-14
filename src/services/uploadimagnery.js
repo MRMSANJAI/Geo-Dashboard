@@ -1,6 +1,5 @@
 import ip from "../values/values.js";
 
-// Helper to log FormData contents
 const logFormData = (formData) => {
   console.log("=== FormData Preview ===");
   for (let [key, value] of formData.entries()) {
@@ -8,6 +7,7 @@ const logFormData = (formData) => {
   }
   console.log("==");
 };
+
 
 // Satellite upload
 export const uploadSatelliteImagery = async ({ projectId, files }) => {

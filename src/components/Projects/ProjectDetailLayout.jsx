@@ -18,7 +18,7 @@ export default function ProjectDetailLayout() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen">
+      <div className="flex min-h-screen mt-5">
         <ProjectSidebar />
         <div className="flex-1 flex items-center justify-center">
           <p className="text-gray-500">Loading project details...</p>
