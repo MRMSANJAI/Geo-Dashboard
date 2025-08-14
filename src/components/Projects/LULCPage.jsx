@@ -118,6 +118,57 @@ export default function LULCMap() {
           maxZoom: 19,
         }).addTo(map);
 
+
+        //fetch WMS layer data
+        fetch("http://192.168.29.152:8000/api/projects/15/rasters/")
+          .then((res) => res.json())
+          .then((data) => {
+            const layerData = Array.isArray(data)
+              ? data[data.length - 1]
+              : data;
+            const wmsUrl = layerData.wms_url.split("?")[0];
+            const layerName = `${layerData.workspace}:${layerData.layer_name}`;
+
+            L.tileLayer
+              .wms(wmsUrl, {
+                layers: layerName,
+                format: "image/png",
+                transparent: true,
+                version: "1.1.0",
+              })
+              .addTo(map);
+
+            if (layerData.bbox_minx !== undefined) {
+              map.fitBounds([
+                [layerData.bbox_miny, layerData.bbox_minx],
+                [layerData.bbox_maxy, layerData.bbox_maxx],
+              ]);
+            }
+          })
+          .catch((err) => console.error("Error fetching WMS data:", err));
+
+        // Example: Adding a WMS Layer
+        const wmsUrl = "http://192.168.29.152:8080/geoserver/wms"; // your GeoServer WMS endpoint
+        const layerName = "workspace:layer_name"; // change to your layer name
+
+        L.tileLayer
+          .wms(wmsUrl, {
+            layers: layerName,
+            format: "image/png",
+            transparent: true,
+            version: "1.1.0",
+          })
+          .addTo(map);
+
+        // Optional: Fit map to WMS bounding box
+        const bbox = [minLat, minLng, maxLat, maxLng]; // replace with your bbox values
+        map.fitBounds([
+          [bbox[1], bbox[0]],
+          [bbox[3], bbox[2]],
+        ]);
+
+
+
         const drawnItems = new L.FeatureGroup();
         drawnRef.current = drawnItems;
         map.addLayer(drawnItems);
@@ -450,15 +501,13 @@ export default function LULCMap() {
             </div>
           </div>
         )}
-         <div
+        <div
           ref={containerRef}
           className="w-full rounded-tl-3xl overflow-hidden shadow-2xl"
           style={{ height: "calc(100vh - 60px)" }}
-        /> 
+        />
 
-        
-
-         {/* <MapContainer
+        {/* <MapContainer
          
           center={[11.0, 78.0]}
           zoom={7}
@@ -656,7 +705,6 @@ export default function LULCMap() {
 
 //   return null;
 // }
-
 
 // export default function LULCPage() {
 //   const [selectedClassId, setSelectedClassId] = useState(LULC_CLASSES[0].id);

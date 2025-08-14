@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { uploadSatelliteImagery, uploadDroneImagery } from "../../services/uploadimagnery.js"
+import { uploadSatelliteImagery, uploadDroneImagery } from "../../services/uploadimagnery.js";
+
 const ProjectImagery = () => {
-  const { pid } = useParams(); // Assuming route contains :pid
+  // ✅ match the param name from your App.jsx parent route
+  const { id } = useParams();
 
   const [mode, setMode] = useState("satellite");
   const [satelliteFiles, setSatelliteFiles] = useState({
@@ -12,7 +14,6 @@ const ProjectImagery = () => {
     nir: null,
   });
   const [droneFile, setDroneFile] = useState(null);
-
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -22,7 +23,7 @@ const ProjectImagery = () => {
   };
 
   const handleDroneFileChange = (file) => {
-    setDroneFile(file);  
+    setDroneFile(file);
   };
 
   const handleReset = () => {
@@ -40,7 +41,7 @@ const ProjectImagery = () => {
     setSuccessMessage("");
     setErrorMessage("");
     try {
-      const res = await uploadSatelliteImagery({ projectId: pid, files: satelliteFiles });
+      const res = await uploadSatelliteImagery({ projectId: id, files: satelliteFiles });
       setSuccessMessage("✅ Satellite imagery uploaded successfully!");
       console.log(res);
     } catch (err) {
@@ -55,7 +56,7 @@ const ProjectImagery = () => {
     setSuccessMessage("");
     setErrorMessage("");
     try {
-      const res = await uploadDroneImagery({ projectId: pid, file: droneFile });
+      const res = await uploadDroneImagery({ projectId: id, file: droneFile });
       setSuccessMessage("✅ Drone imagery uploaded successfully!");
       console.log(res);
     } catch (err) {
@@ -69,7 +70,6 @@ const ProjectImagery = () => {
     <div className="font-sans min-h-screen bg-gray-50 p-6">
       <h1 className="text-2xl font-bold text-gray-800 mb-6">Select Imagery Type</h1>
 
-      {/* Status Messages */}
       {isLoading && <div className="bg-blue-100 text-blue-800 px-4 py-2 rounded mb-3">🔄 Uploading...</div>}
       {successMessage && <div className="bg-green-100 text-green-800 px-4 py-2 rounded mb-3">{successMessage}</div>}
       {errorMessage && <div className="bg-red-100 text-red-800 px-4 py-2 rounded mb-3">{errorMessage}</div>}
@@ -98,7 +98,7 @@ const ProjectImagery = () => {
         ))}
       </div>
 
-      {/* Satellite */}
+      {/* Satellite imagery form */}
       {mode === "satellite" && (
         <div className="p-6 rounded-xl shadow-sm border border-gray-200 bg-white mb-6">
           <h2 className="text-lg font-semibold text-gray-800 mb-4">Satellite Imagery</h2>
@@ -137,7 +137,7 @@ const ProjectImagery = () => {
         </div>
       )}
 
-      {/* Drone */}
+      {/* Drone imagery form */}
       {mode === "drone" && (
         <div className="p-6 rounded-xl shadow-sm border border-gray-200 bg-white mb-6">
           <h2 className="text-lg font-semibold text-gray-800 mb-4">Drone Imagery</h2>
