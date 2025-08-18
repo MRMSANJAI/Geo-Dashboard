@@ -1,12 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import {
-  uploadSatelliteImagery,
-  uploadDroneImagery,
-} from "../../services/uploadimagnery.js";
+import {uploadSatelliteImagery,uploadDroneImagery,} from "../../services/uploadimagnery.js";
+import { fetchProjectById } from "../../services/projectsDetailsApi.js";
+
+
 
 const ProjectImagery = () => {
   const { id } = useParams();
+  const [projectTitle, setProjectTitle] = useState("");
+
+  const [project, setProject] = useState(null);
+
+  useEffect(() => {
+    const loadProject = async () => {
+      const data = await fetchProjectById(id);
+      setProject(data);
+    };
+    loadProject();
+  }, [id]);
 
   const [mode, setMode] = useState("satellite");
   const [satelliteFiles, setSatelliteFiles] = useState({
@@ -39,9 +50,8 @@ const ProjectImagery = () => {
     setErrorMessage("");
   };
 
-  const allSatelliteFilesSelected = Object.values(satelliteFiles)
-    .slice(0, 3)
-    .every(Boolean);
+  const allSatelliteFilesSelected =
+    Object.values(satelliteFiles).every(Boolean);
 
   // Fake progress simulation
   useEffect(() => {
@@ -96,9 +106,13 @@ const ProjectImagery = () => {
 
   return (
     <div className="font-sans min-h-screen bg-gray-50 p-6">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">
-        Select Imagery Type
+      <h1 className="text-2xl font-sans font-semibold mb-4 text-gray-800">
+        {project ? project.title : "Loading project..."}
       </h1>
+
+      <h2 className="text-2xl  text-gray-800 mb-6">
+        Select Imagery Type
+      </h2>
 
       {successMessage && (
         <div className="bg-green-100 text-green-800 px-4 py-2 rounded mb-3">
@@ -142,6 +156,7 @@ const ProjectImagery = () => {
       {/* Satellite imagery form */}
       {mode === "satellite" && (
         <div className="p-6 rounded-xl shadow-sm border border-gray-200 bg-white mb-6">
+        
           <h2 className="text-lg font-semibold text-gray-800 mb-4">
             Satellite Imagery
           </h2>
@@ -227,50 +242,54 @@ const ProjectImagery = () => {
         </div>
       )}
 
-  {/* Upload Progress Modal */}
-{isUploading && (
-  <div className="fixed inset-0 backdrop-blur-sm bg-white/30 flex items-center justify-center z-50">
-    <div className="bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center">
-      {/* Circle Progress */}
-      <div className="relative w-40 h-40">
-        {/* Background Circle */}
-        <svg className="absolute top-0 left-0 w-full h-full" viewBox="0 0 36 36">
-          <path
-            stroke="#C1F6ED"
-            strokeOpacity="0.2"
-            strokeWidth="3"
-            fill="none"
-            strokeLinecap="round"
-            d="M18 2.0845
+      {/* Upload Progress Modal */}
+      {isUploading && (
+        <div className="fixed inset-0 backdrop-blur-sm bg-white/30 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center">
+            {/* Circle Progress */}
+            <div className="relative w-40 h-40">
+              {/* Background Circle */}
+              <svg
+                className="absolute top-0 left-0 w-full h-full"
+                viewBox="0 0 36 36"
+              >
+                <path
+                  stroke="#C1F6ED"
+                  strokeOpacity="0.2"
+                  strokeWidth="3"
+                  fill="none"
+                  strokeLinecap="round"
+                  d="M18 2.0845
                a 15.9155 15.9155 0 0 1 0 31.831
                a 15.9155 15.9155 0 0 1 0 -31.831"
-          />
-          {/* Progress Arc */}
-          <path
-            stroke="#3FD0C0"
-            strokeWidth="3"
-            fill="none"
-            strokeLinecap="round"
-            className="transition-all duration-300 ease-out"
-            strokeDasharray={`${progress}, 100`}
-            d="M18 2.0845
+                />
+                {/* Progress Arc */}
+                <path
+                  stroke="#3FD0C0"
+                  strokeWidth="3"
+                  fill="none"
+                  strokeLinecap="round"
+                  className="transition-all duration-300 ease-out"
+                  strokeDasharray={`${progress}, 100`}
+                  d="M18 2.0845
                a 15.9155 15.9155 0 0 1 0 31.831
                a 15.9155 15.9155 0 0 1 0 -31.831"
-          />
-        </svg>
+                />
+              </svg>
 
-        {/* Percentage in middle */}
-        <div className="absolute inset-0 flex items-center justify-center text-lg font-bold text-gray-800">
-          {progress}%
+              {/* Percentage in middle */}
+              <div className="absolute inset-0 flex items-center justify-center text-lg font-bold text-gray-800">
+                {progress}%
+              </div>
+            </div>
+
+            {/* Uploading text */}
+            <p className="mt-4 text-gray-700 font-medium text-sm">
+              Uploading...
+            </p>
+          </div>
         </div>
-      </div>
-
-      {/* Uploading text */}
-      <p className="mt-4 text-gray-700 font-medium text-sm">Uploading...</p>
-    </div>
-  </div>
-)}
-
+      )}
     </div>
   );
 };
