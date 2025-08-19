@@ -119,53 +119,53 @@ export default function LULCMap() {
         }).addTo(map);
 
 
-        //fetch WMS layer data
-        fetch("http://192.168.29.152:8000/api/projects/15/rasters/")
-          .then((res) => res.json())
-          .then((data) => {
-            const layerData = Array.isArray(data)
-              ? data[data.length - 1]
-              : data;
-            const wmsUrl = layerData.wms_url.split("?")[0];
-            const layerName = `${layerData.workspace}:${layerData.layer_name}`;
+        // //fetch WMS layer data
+        // fetch("http://192.168.29.152:8000/api/projects/15/rasters/")
+        //   .then((res) => res.json())
+        //   .then((data) => {
+        //     const layerData = Array.isArray(data)
+        //       ? data[data.length - 1]
+        //       : data;
+        //     const wmsUrl = layerData.wms_url.split("?")[0];
+        //     const layerName = `${layerData.workspace}:${layerData.layer_name}`;
 
-            L.tileLayer
-              .wms(wmsUrl, {
-                layers: layerName,
-                format: "image/png",
-                transparent: true,
-                version: "1.1.0",
-              })
-              .addTo(map);
+        //     L.tileLayer
+        //       .wms(wmsUrl, {
+        //         layers: layerName,
+        //         format: "image/png",
+        //         transparent: true,
+        //         version: "1.1.0",
+        //       })
+        //       .addTo(map);
 
-            if (layerData.bbox_minx !== undefined) {
-              map.fitBounds([
-                [layerData.bbox_miny, layerData.bbox_minx],
-                [layerData.bbox_maxy, layerData.bbox_maxx],
-              ]);
-            }
-          })
-          .catch((err) => console.error("Error fetching WMS data:", err));
+        //     if (layerData.bbox_minx !== undefined) {
+        //       map.fitBounds([
+        //         [layerData.bbox_miny, layerData.bbox_minx],
+        //         [layerData.bbox_maxy, layerData.bbox_maxx],
+        //       ]);
+        //     }
+        //   })
+        //   .catch((err) => console.error("Error fetching WMS data:", err));
 
-        // Example: Adding a WMS Layer
-        const wmsUrl = "http://192.168.29.152:8080/geoserver/wms"; // your GeoServer WMS endpoint
-        const layerName = "workspace:layer_name"; // change to your layer name
+        // // Example: Adding a WMS Layer
+        // const wmsUrl = "http://192.168.29.152:8080/geoserver/wms"; // your GeoServer WMS endpoint
+        // const layerName = "workspace:layer_name"; // change to your layer name
 
-        L.tileLayer
-          .wms(wmsUrl, {
-            layers: layerName,
-            format: "image/png",
-            transparent: true,
-            version: "1.1.0",
-          })
-          .addTo(map);
+        // L.tileLayer
+        //   .wms(wmsUrl, {
+        //     layers: layerName,
+        //     format: "image/png",
+        //     transparent: true,
+        //     version: "1.1.0",
+        //   })
+        //   .addTo(map);
 
-        // Optional: Fit map to WMS bounding box
-        const bbox = [minLat, minLng, maxLat, maxLng]; // replace with your bbox values
-        map.fitBounds([
-          [bbox[1], bbox[0]],
-          [bbox[3], bbox[2]],
-        ]);
+        // // Optional: Fit map to WMS bounding box
+        // const bbox = [minLat, minLng, maxLat, maxLng]; // replace with your bbox values
+        // map.fitBounds([
+        //   [bbox[1], bbox[0]],
+        //   [bbox[3], bbox[2]],
+        // ]);
 
 
 
@@ -532,6 +532,9 @@ export default function LULCMap() {
     </div>
   );
 }
+
+
+
 
 // LULCPage.jsx
 // import React, { useEffect, useMemo, useRef, useState } from "react";
