@@ -68,7 +68,7 @@ const ProjectSidebar = () => {
     <>
       {/* 🔹 Mobile Header with Hamburger button */}
       <div className="lg:hidden flex items-center justify-between px-4 py-3 bg-[#121b24] text-white">
-        <h1 className="text-lg font-sand">Project Menu</h1>
+        <h1 className="text-lg font-semibold">Project Menu</h1>
         <button onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? <X size={26} /> : <Menu size={26} />}
         </button>
@@ -76,7 +76,7 @@ const ProjectSidebar = () => {
 
       {/* 🔹 Sidebar */}
       <aside
-        className={`fixed lg:static left-0 h-full w-64 bg-[#121b24] text-white p-5 z-50 
+        className={`fixed lg:static  left-0 h-full w-64 bg-[#121b24] text-white p-5 z-50 
         transform transition-transform duration-300 ease-in-out
         ${isOpen ? "translate-x-0" : "-translate-x-full"} 
         lg:translate-x-0`}
@@ -112,3 +112,4 @@ const ProjectSidebar = () => {
 };
 
 export default ProjectSidebar;
+
