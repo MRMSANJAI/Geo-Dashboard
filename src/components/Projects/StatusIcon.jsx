@@ -2,9 +2,12 @@
 import React from "react";
 
 const StatusIcon = ({ status }) => {
-  const iconUrl = status === "Complete"
+const iconUrl =
+  status === "Complete"
     ? "https://img.icons8.com/fluency/48/ok--v1.png"
-    : "https://img.icons8.com/fluency/48/cancel.png";
+    : status === "Incomplete"
+    ? "https://img.icons8.com/fluency/48/cancel.png"
+    : "https://img.icons8.com/fluency/48/hourglass-sand-bottom.png";
 
   return (
     <img
