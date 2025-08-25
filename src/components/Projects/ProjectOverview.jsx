@@ -21,7 +21,11 @@ const ZoomToLocation = ({ location, zoom = 14 }) => {
 export default function ProjectOverview() {
   const { project } = useOutletContext();
   const [processingItem, setProcessingItem] = useState(null);
-  const [checklistState, setChecklistState] = useState(project?.checklist || []);
+  const [checklistState, setChecklistState] = useState(
+    project?.checklist || []
+  );
+
+  const [tagsState, setTagsState] = useState(project?.tags || []);
 
   const name = project?.title ?? "Untitled Project";
   const description = project?.description ?? "No description";
@@ -35,38 +39,50 @@ export default function ProjectOverview() {
     processedTiles: "N/A",
   };
 
-  // Handle Play NDVI clickda
- const handlePlayClick = async (item, idx) => {
-  setProcessingItem(idx);
-  try {
-    if (!project?.id) {
-      console.error("Project ID is missing");
-      return;
+  useEffect(() => {
+    if (project) {
+      setTagsState(project.tags || []);
+      setChecklistState(project.checklist || []);
     }
+  }, [project]);
 
-    const response = await fetch(`${ip}/api/projects/${project.id}/ndvi/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+  const handlePlayClick = async (item, idx) => {
+    setProcessingItem(idx);
+    try {
+      if (!project?.id) {
+        console.error("Project ID is missing");
+        return;
+      }
 
-    if (!response.ok) throw new Error("NDVI process failed");
+      const response = await fetch(`${ip}/api/projects/${project.id}/ndvi/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-    const data = await response.json();
-    console.log("NDVI response:", data);
+      if (!response.ok) throw new Error("NDVI process failed");
 
-    // ✅ Dynamically update status
-    const updatedChecklist = [...checklistState];
-    updatedChecklist[idx].status = "active"; // or data.status if API returns it
-    setChecklistState(updatedChecklist);
-  } catch (error) {
-    console.error(error);
-  } finally {
-    setProcessingItem(null);
-  }
-};
+      const data = await response.json();
+      console.log("NDVI response:", data);
 
+      // ✅ Update checklist immediately
+      setChecklistState((prev) =>
+        prev.map((checkItem, i) =>
+          i === idx ? { ...checkItem, status: "active" } : checkItem
+        )
+      );
+
+      // ✅ Add NDVI tag locally if missing
+      if (!tagsState.includes("NDVI")) {
+        setTagsState((prev) => [...prev, "NDVI"]);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setProcessingItem(null);
+    }
+  };
 
   return (
     <div className="font-sans max-w-6xl mx-auto p-6 space-y-6 bg-white shadow-xl rounded-2xl mt-5">
@@ -106,15 +122,19 @@ export default function ProjectOverview() {
           {checklistState.length > 0 ? (
             <ul className="space-y-2">
               {checklistState.map((item, idx) => (
-                <li key={idx} className="flex items-center justify-between border-b pb-3">
+                <li
+                  key={idx}
+                  className="flex items-center justify-between border-b pb-3"
+                >
                   <div className="flex items-center gap-2">
                     <span>{item?.item ?? "Unnamed item"}</span>
 
                     {/* Play button only if NDVI and tags contain AOI & Imagery */}
                     {item?.item?.toLowerCase().includes("ndvi") &&
-                      tags.includes("AOI") &&
-                      tags.includes("Imagery") &&
-                      item.status !== "active" && (
+                      tagsState.includes("AOI") &&
+                      tagsState.includes("Imagery") &&
+                      !tagsState.includes("NDVI") && // ✅ Hide button if NDVI tag already exists
+                      item.status !== "active" && ( // ✅ Also hide if checklist is active
                         <button
                           onClick={() => handlePlayClick(item, idx)}
                           disabled={processingItem === idx}
