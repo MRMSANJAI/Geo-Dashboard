@@ -9,8 +9,6 @@ import ProjectCard from "../components/layout/ProjectCard";
 import { createProject } from "../services/createProjectApi";
 import Footer from "../components/layout/Footer";
 
-
-
 export default function Overview() {
   const [data, setData] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -21,6 +19,38 @@ export default function Overview() {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
+  // const handleSubmit = async () => {
+  //   setIsLoading(true);
+  //   setSuccessMessage("");
+  //   setErrorMessage("");
+
+  //   try {
+  //     const result = await createProject({
+  //       name: projectName,
+  //       description: projectDescription,
+  //     });
+
+  //     console.log("Project created:", result);
+  //     setProjectName("");
+  //     setProjectDescription("");
+  //     setSuccessMessage("✅ Project created successfully!");
+
+  //     // Wait 2 seconds before closing modal and clearing message
+  //     setTimeout(() => {
+  //       setSuccessMessage("");
+  //       setIsModalOpen(false);
+  //     }, 2000);
+  //   } catch (err) {
+  //     setErrorMessage("❌ Failed to create project.");
+  //     console.error("Failed to create project:", err);
+
+  //     setTimeout(() => {
+  //       setErrorMessage("");
+  //     }, 5000);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
   const handleSubmit = async () => {
     setIsLoading(true);
     setSuccessMessage("");
@@ -36,6 +66,10 @@ export default function Overview() {
       setProjectName("");
       setProjectDescription("");
       setSuccessMessage("✅ Project created successfully!");
+
+      // ✅ Refresh the dashboard data
+      const updatedData = await fetchDashboardData();
+      setData(updatedData);
 
       // Wait 2 seconds before closing modal and clearing message
       setTimeout(() => {

@@ -25,9 +25,10 @@ export default function App() {
           <Route path="aoi/:pid" element={<ProjectAOI />} />
           <Route path="report" element={<ProjectReport />} />
           <Route path="imagery" element={< ProjectImagery/>} />
+           <Route path="lulc" element={<LULCPage/>} /> {/* LULC Page */}
           <Route path="wmslayer" element={<WMSLayer />} /> {/* WMS Layer map */}
 
-          <Route path="lulc" element={<LULCPage/>} /> {/* LULC Page */}
+         
 
        </Route>
 
