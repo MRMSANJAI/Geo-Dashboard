@@ -19,11 +19,16 @@ const ZoomToLocation = ({ location, zoom = 14 }) => {
 };
 
 export default function ProjectOverview() {
-  const { project } = useOutletContext();
+  
+  const { project, refreshProject } = useOutletContext();
+  
   const [processingItem, setProcessingItem] = useState(null);
   const [checklistState, setChecklistState] = useState(
     project?.checklist || []
   );
+
+  const [errorModal, setErrorModal] = useState({ visible: false, message: "" });
+  const [successModal, setSuccessModal] = useState({ visible: false, message: "" });
 
   const [tagsState, setTagsState] = useState(project?.tags || []);
 
@@ -48,9 +53,13 @@ export default function ProjectOverview() {
 
   const handlePlayClick = async (item, idx) => {
     setProcessingItem(idx);
+    
     try {
       if (!project?.id) {
-        console.error("Project ID is missing");
+        setErrorModal({
+          visible: true,
+          message: "Project ID is missing. Cannot start NDVI process.",
+        });
         return;
       }
 
@@ -61,24 +70,52 @@ export default function ProjectOverview() {
         },
       });
 
-      if (!response.ok) throw new Error("NDVI process failed");
+      if (!response.ok) {
+        const errorData = await response.json();
+        setErrorModal({
+          visible: true,
+          message: errorData.message || "NDVI process failed",
+        });
+        return;
+      }
 
       const data = await response.json();
       console.log("NDVI response:", data);
 
-      // ✅ Update checklist immediately
+      // Show success message
+      setSuccessModal({
+        visible: true,
+        message: "✅ NDVI process completed successfully!"
+      });
+
+      //  Update checklist immediately (optimistic update)
       setChecklistState((prev) =>
         prev.map((checkItem, i) =>
           i === idx ? { ...checkItem, status: "active" } : checkItem
         )
       );
 
-      // ✅ Add NDVI tag locally if missing
+      // Add NDVI tag locally (optimistic update)
       if (!tagsState.includes("NDVI")) {
         setTagsState((prev) => [...prev, "NDVI"]);
       }
+
+      //  ADD: Trigger automatic refresh to sync with server data
+      if (refreshProject) {
+        refreshProject();
+      }
+
+      // Auto-hide success message after 3 seconds
+      setTimeout(() => {
+        setSuccessModal({ visible: false, message: "" });
+      }, 3000);
+
     } catch (error) {
-      console.error(error);
+      console.error("NDVI processing error:", error);
+      setErrorModal({
+        visible: true,
+        message: "An unexpected error occurred. Please try again.",
+      });
     } finally {
       setProcessingItem(null);
     }
@@ -133,12 +170,12 @@ export default function ProjectOverview() {
                     {item?.item?.toLowerCase().includes("ndvi") &&
                       tagsState.includes("AOI") &&
                       tagsState.includes("Imagery") &&
-                      !tagsState.includes("NDVI") && // ✅ Hide button if NDVI tag already exists
-                      item.status !== "active" && ( // ✅ Also hide if checklist is active
+                      !tagsState.includes("NDVI") && // Hide button if NDVI tag already exists
+                      item.status !== "active" && ( // Also hide if checklist is active
                         <button
                           onClick={() => handlePlayClick(item, idx)}
                           disabled={processingItem === idx}
-                          className="p-1 rounded-full bg-[#2EAF7D] text-white hover:bg-[#24986b] transition disabled:opacity-50"
+                          className="p-1 rounded-full bg-[#2EAF7D] text-white hover:bg-[#24986b] transition disabled:opacity-50 disabled:cursor-not-allowed"
                           title="Run NDVI Analysis"
                         >
                           {processingItem === idx ? (
@@ -193,6 +230,42 @@ export default function ProjectOverview() {
         <MetricCard label="LULC Classes" value={metrics.lulcClasses} />
         <MetricCard label="Processed Tiles" value={metrics.processedTiles} />
       </div>
+
+      {/* Success Modal */}
+      {successModal.visible && (
+        <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-white/30 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full border-l-4 border-green-500">
+            <h2 className="text-lg font-semibold text-green-600 mb-2">Success!</h2>
+            <p className="text-gray-700">{successModal.message}</p>
+            <div className="mt-4 flex justify-end">
+              <button
+                onClick={() => setSuccessModal({ visible: false, message: "" })}
+                className="bg-[#2EAF7D] text-white px-4 py-2 rounded hover:bg-[#24986b] transition"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Error Modal */}
+      {errorModal.visible && (
+        <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-white/30 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full border-l-4 border-red-500">
+            <h2 className="text-lg font-semibold text-red-600 mb-2">Error</h2>
+            <p className="text-gray-700">{errorModal.message}</p>
+            <div className="mt-4 flex justify-end">
+              <button
+                onClick={() => setErrorModal({ visible: false, message: "" })}
+                className="bg-[#2EAF7D] text-white px-4 py-2 rounded hover:bg-[#24986b] transition"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

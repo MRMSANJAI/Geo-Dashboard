@@ -16,6 +16,7 @@
     "axios": "^1.11.0",
     "chart.js": "^4.5.0",
     "cors": "^2.8.5",
+    "framer-motion": "^12.23.12",
     "georaster": "^1.6.0",
     "georaster-layer-for-leaflet": "^3.10.0",
     "geotiff": "^2.1.4-beta.0",

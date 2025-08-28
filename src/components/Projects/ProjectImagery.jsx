@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useOutletContext } from "react-router-dom";
 import {uploadSatelliteImagery,uploadDroneImagery,} from "../../services/uploadimagnery.js";
 import { fetchProjectById } from "../../services/projectsDetailsApi.js";
 
-
-
 const ProjectImagery = () => {
-  const { id } = useParams();
+  const { id } = useParams()
+  const { refreshProject } = useOutletContext();
+  
   const [projectTitle, setProjectTitle] = useState("");
-
   const [project, setProject] = useState(null);
 
   useEffect(() => {
@@ -53,7 +52,7 @@ const ProjectImagery = () => {
   const allSatelliteFilesSelected =
     Object.values(satelliteFiles).every(Boolean);
 
-  // Fake progress simulation
+
   useEffect(() => {
     let timer;
     if (isUploading && progress < 95) {
@@ -76,33 +75,66 @@ const ProjectImagery = () => {
     }, 500);
   };
 
-  const handleUploadSatellite = async () => {
-    setSuccessMessage("");
-    setErrorMessage("");
-    showUploadProgress();
-    try {
-      await uploadSatelliteImagery({ projectId: id, files: satelliteFiles });
-      setSuccessMessage("✅ Satellite imagery uploaded successfully!");
-    } catch (err) {
-      setErrorMessage("❌ Failed to upload satellite imagery.");
-    } finally {
-      hideUploadProgress();
-    }
-  };
+ const handleUploadSatellite = async () => {
+  setSuccessMessage("");
+  setErrorMessage("");
+  showUploadProgress();
 
-  const handleUploadDrone = async () => {
-    setSuccessMessage("");
-    setErrorMessage("");
-    showUploadProgress();
-    try {
-      await uploadDroneImagery({ projectId: id, file: droneFile });
-      setSuccessMessage("✅ Drone imagery uploaded successfully!");
-    } catch (err) {
-      setErrorMessage("❌ Failed to upload drone imagery.");
-    } finally {
-      hideUploadProgress();
+  try {
+    const response = await uploadSatelliteImagery({ projectId: id, files: satelliteFiles });
+
+    console.log("✅ Satellite Upload Response:", response); // <-- Add this log
+
+    setSuccessMessage("✅ Satellite imagery uploaded successfully!");
+
+    if (refreshProject) {
+      refreshProject();
     }
-  };
+
+    setTimeout(() => {
+      setSuccessMessage("");
+    }, 3000);
+  } catch (err) {
+    setErrorMessage("❌ Failed to upload satellite imagery.");
+    console.error("❌ Error in handleUploadSatellite:", err); // <-- More descriptive
+    setTimeout(() => {
+      setErrorMessage("");
+    }, 5000);
+  } finally {
+    hideUploadProgress();
+  }
+};
+
+
+ const handleUploadDrone = async () => {
+  setSuccessMessage("");
+  setErrorMessage("");
+  showUploadProgress();
+
+  try {
+    const response = await uploadDroneImagery({ projectId: id, file: droneFile });
+
+    console.log("✅ Drone Upload Response:", response); // <-- Add this log
+
+    setSuccessMessage("✅ Drone imagery uploaded successfully!");
+
+    if (refreshProject) {
+      refreshProject();
+    }
+
+    setTimeout(() => {
+      setSuccessMessage("");
+    }, 3000);
+  } catch (err) {
+    setErrorMessage("❌ Failed to upload drone imagery.");
+    console.error("❌ Error in handleUploadDrone:", err); // <-- More descriptive
+    setTimeout(() => {
+      setErrorMessage("");
+    }, 5000);
+  } finally {
+    hideUploadProgress();
+  }
+};
 
   return (
     <div className="font-sans min-h-screen bg-gray-50 p-6">
@@ -115,12 +147,12 @@ const ProjectImagery = () => {
       </h2>
 
       {successMessage && (
-        <div className="bg-green-100 text-green-800 px-4 py-2 rounded mb-3">
+        <div className="bg-green-100 border border-green-300 text-green-800 px-4 py-2 rounded mb-3 font-medium">
           {successMessage}
         </div>
       )}
       {errorMessage && (
-        <div className="bg-red-100 text-red-800 px-4 py-2 rounded mb-3">
+        <div className="bg-red-100 border border-red-300 text-red-800 px-4 py-2 rounded mb-3 font-medium">
           {errorMessage}
         </div>
       )}
@@ -183,17 +215,22 @@ const ProjectImagery = () => {
               onClick={handleUploadSatellite}
               className={`px-5 py-2 text-white text-sm font-medium rounded-lg shadow-sm transition 
                 ${
-                  allSatelliteFilesSelected
+                  allSatelliteFilesSelected && !isUploading
                     ? "bg-blue-600 hover:bg-blue-700"
                     : "bg-gray-300 cursor-not-allowed"
                 }`}
-              disabled={!allSatelliteFilesSelected}
+              disabled={!allSatelliteFilesSelected || isUploading}
             >
-              Upload Satellite Imagery
+              {isUploading ? "Uploading..." : "Upload Satellite Imagery"}
             </button>
             <button
               onClick={handleReset}
-              className="px-5 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded-lg shadow-sm transition"
+              disabled={isUploading}
+              className={`px-5 py-2 text-white text-sm font-medium rounded-lg shadow-sm transition ${
+                isUploading 
+                  ? "bg-gray-300 cursor-not-allowed" 
+                  : "bg-red-500 hover:bg-red-600"
+              }`}
             >
               Reset
             </button>
@@ -224,17 +261,22 @@ const ProjectImagery = () => {
               onClick={handleUploadDrone}
               className={`px-5 py-2 text-white text-sm font-medium rounded-lg shadow-sm transition 
                 ${
-                  droneFile
+                  droneFile && !isUploading
                     ? "bg-blue-600 hover:bg-blue-700"
                     : "bg-gray-300 cursor-not-allowed"
                 }`}
-              disabled={!droneFile}
+              disabled={!droneFile || isUploading}
             >
-              Upload Drone Imagery
+              {isUploading ? "Uploading..." : "Upload Drone Imagery"}
             </button>
             <button
               onClick={handleReset}
-              className="px-5 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded-lg shadow-sm transition"
+              disabled={isUploading}
+              className={`px-5 py-2 text-white text-sm font-medium rounded-lg shadow-sm transition ${
+                isUploading 
+                  ? "bg-gray-300 cursor-not-allowed" 
+                  : "bg-red-500 hover:bg-red-600"
+              }`}
             >
               Reset
             </button>
@@ -285,7 +327,7 @@ const ProjectImagery = () => {
 
             {/* Uploading text */}
             <p className="mt-4 text-gray-700 font-medium text-sm">
-              Uploading...
+              Uploading imagery...
             </p>
           </div>
         </div>

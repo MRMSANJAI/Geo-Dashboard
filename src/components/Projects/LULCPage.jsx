@@ -118,7 +118,6 @@
 //           maxZoom: 19,
 //         }).addTo(map);
 
-
 //         //fetch WMS layer data
 //         fetch("http://192.168.29.152:8000/api/projects/21/rasters/")
 //           .then((res) => res.json())
@@ -166,8 +165,6 @@
 //           [bbox[1], bbox[0]],
 //           [bbox[3], bbox[2]],
 //         ]);
-
-
 
 //         const drawnItems = new L.FeatureGroup();
 //         drawnRef.current = drawnItems;
@@ -508,7 +505,7 @@
 //         />
 
 //         {/* <MapContainer
-         
+
 //           center={[11.0, 78.0]}
 //           zoom={7}
 //           style={{ height: "100vh", width: "100%" }}
@@ -533,10 +530,8 @@
 //   );
 // }
 
-
-
-
 import React, { useEffect, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
 
 const LULC_CLASSES = [
   { id: "agriculture", label: "Agriculture", color: "#84cc16" },
@@ -554,6 +549,7 @@ const CDN = {
 };
 
 export default function LULCMap() {
+  const { id } = useParams();
   const containerRef = useRef(null);
   const mapRef = useRef(null);
   const drawnRef = useRef(null);
@@ -642,9 +638,11 @@ export default function LULCMap() {
   // Helper function to setup map events and controls
   function setupMapControls(map, drawnItems) {
     const L = window.L;
-    
+
     // Create initial control
-    const cls = LULC_CLASSES.find((c) => c.id === selectedClassIdRef.current) || LULC_CLASSES[0];
+    const cls =
+      LULC_CLASSES.find((c) => c.id === selectedClassIdRef.current) ||
+      LULC_CLASSES[0];
     const control = createDrawingControl(map, drawnItems, cls.color);
     controlRef.current = control;
     map.addControl(control);
@@ -673,11 +671,11 @@ export default function LULCMap() {
       geo.properties = geo.properties || {};
       geo.properties.lulc_class = selectedClassIdRef.current;
       layer.feature = geo;
-      
+
       const selectedCls =
         LULC_CLASSES.find((c) => c.id === selectedClassIdRef.current) ||
         LULC_CLASSES[0];
-      
+
       if (layer.setStyle) {
         layer.setStyle({
           color: selectedCls.color,
@@ -686,7 +684,7 @@ export default function LULCMap() {
           fillColor: selectedCls.color,
         });
       }
-      
+
       drawnItems.addLayer(layer);
       refreshList();
     });
@@ -712,9 +710,10 @@ export default function LULCMap() {
     let canceled = false;
 
     async function init() {
-      if (typeof window === "undefined" || typeof document === "undefined") return;
+      if (typeof window === "undefined" || typeof document === "undefined")
+        return;
       if (isMapInitialized.current) return;
-      
+
       try {
         setLoading(true);
         addCss(CDN.leafletCss);
@@ -731,11 +730,12 @@ export default function LULCMap() {
           [11.0, 78.0],
           7
         );
-        
+
         // Add base tile layer
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
           maxZoom: 19,
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         }).addTo(map);
 
         // Initialize drawing layers
@@ -751,11 +751,13 @@ export default function LULCMap() {
 
         // Now fetch WMS layer data AFTER map is fully initialized
         try {
-          const response = await fetch("http://192.168.29.152:8000/api/projects/21/rasters/");
+          const response = await fetch(
+            `http://192.168.29.152:8000/api/projects/${id}/rasters/`
+          );
           const data = await response.json();
-          
+
           const layerData = Array.isArray(data) ? data[data.length - 1] : data;
-          
+
           if (layerData && layerData.wms_url) {
             const wmsUrl = layerData.wms_url.split("?")[0];
             const layerName = `${layerData.workspace}:${layerData.layer_name}`;
@@ -765,17 +767,18 @@ export default function LULCMap() {
               format: "image/png",
               transparent: true,
               version: "1.1.0",
-              attribution: 'WMS Layer'
+              attribution: "WMS Layer",
             });
 
             wmsLayer.addTo(map);
             setWmsLoaded(true);
 
-            // Fit to bounding box if available
-            if (layerData.bbox_minx !== undefined && 
-                layerData.bbox_miny !== undefined &&
-                layerData.bbox_maxx !== undefined &&
-                layerData.bbox_maxy !== undefined) {
+            if (
+              layerData.bbox_minx !== undefined &&
+              layerData.bbox_miny !== undefined &&
+              layerData.bbox_maxx !== undefined &&
+              layerData.bbox_maxy !== undefined
+            ) {
               map.fitBounds([
                 [layerData.bbox_miny, layerData.bbox_minx],
                 [layerData.bbox_maxy, layerData.bbox_maxx],
@@ -784,10 +787,8 @@ export default function LULCMap() {
           }
         } catch (wmsError) {
           console.error("Error fetching WMS data:", wmsError);
-          // Continue without WMS layer - drawing tools should still work
-          setWmsLoaded(true); // Set to true to indicate loading is complete
+          setWmsLoaded(true);
         }
-
         cleanupRef.current = () => {
           try {
             if (map) {
@@ -831,19 +832,25 @@ export default function LULCMap() {
 
   // Handle class selection changes - only update control, don't recreate map
   useEffect(() => {
-    if (!mapRef.current || !controlRef.current || !isMapInitialized.current) return;
+    if (!mapRef.current || !controlRef.current || !isMapInitialized.current)
+      return;
 
     const L = window.L;
-    const cls = LULC_CLASSES.find((c) => c.id === selectedClassId) || LULC_CLASSES[0];
+    const cls =
+      LULC_CLASSES.find((c) => c.id === selectedClassId) || LULC_CLASSES[0];
 
     try {
       // Remove old control
       mapRef.current.removeControl(controlRef.current);
-      
+
       // Create new control with updated color
-      const newControl = createDrawingControl(mapRef.current, drawnRef.current, cls.color);
+      const newControl = createDrawingControl(
+        mapRef.current,
+        drawnRef.current,
+        cls.color
+      );
       controlRef.current = newControl;
-      
+
       // Add new control
       mapRef.current.addControl(newControl);
     } catch (err) {
@@ -854,7 +861,7 @@ export default function LULCMap() {
   // Handle editing state changes
   useEffect(() => {
     if (!drawnRef.current) return;
-    
+
     drawnRef.current.eachLayer((layer) => {
       try {
         if (layer._customId === editingId) {
@@ -866,7 +873,7 @@ export default function LULCMap() {
         console.error("Error toggling layer editing:", err);
       }
     });
-    
+
     if (!editingId) {
       const list = [];
       drawnRef.current.eachLayer((layer) => {
@@ -948,25 +955,37 @@ export default function LULCMap() {
         </div>
 
         {/* Status indicator */}
-        <div className={`p-3 rounded-lg border ${
-          loading 
-            ? 'bg-yellow-50 border-yellow-200 text-yellow-800' 
-            : wmsLoaded 
-            ? 'bg-green-50 border-green-200 text-green-800'
-            : 'bg-red-50 border-red-200 text-red-800'
-        }`}>
+        <div
+          className={`p-3 rounded-lg border ${
+            loading
+              ? "bg-yellow-50 border-yellow-200 text-yellow-800"
+              : wmsLoaded
+              ? "bg-green-50 border-green-200 text-green-800"
+              : "bg-red-50 border-red-200 text-red-800"
+          }`}
+        >
           <div className="flex items-center gap-2">
-            <div className={`w-2 h-2 rounded-full ${
-              loading ? 'bg-yellow-500 animate-pulse' : wmsLoaded ? 'bg-green-500' : 'bg-red-500'
-            }`} />
+            <div
+              className={`w-2 h-2 rounded-full ${
+                loading
+                  ? "bg-yellow-500 animate-pulse"
+                  : wmsLoaded
+                  ? "bg-green-500"
+                  : "bg-red-500"
+              }`}
+            />
             <span className="text-sm font-medium">
-              {loading ? 'Loading map and WMS layer...' : wmsLoaded ? 'Map ready - Drawing tools active' : 'Map ready - WMS layer failed'}
+              {loading
+                ? "Loading map and WMS layer..."
+                : wmsLoaded
+                ? "Map ready - Drawing tools active"
+                : "Map ready - WMS layer failed"}
             </span>
           </div>
         </div>
 
         {/* Class Selection */}
-        <div className="bg-gradient-to-r from-blue-50 to-emerald-50 rounded-2xl p-6 border border-blue-100">
+        <div className="bg-gradient-to-r from-blue-50 to-emerald-50 rounded-2xl p-5 border border-blue-100">
           <label className="block text-lg font-semibold text-slate-800 mb-5">
             Land Cover Class
           </label>
@@ -976,14 +995,14 @@ export default function LULCMap() {
                 key={cls.id}
                 onClick={() => setSelectedClassId(cls.id)}
                 disabled={loading}
-                className={`w-full flex items-center gap-4 p-4 rounded-xl transition-all duration-200 border-2 ${
+                className={`w-full flex items-center gap-4 p-3 rounded-xl transition-all duration-200 border-2 ${
                   selectedClassId === cls.id
                     ? "bg-white border-blue-500 shadow-lg ring-2 ring-blue-500/20 transform scale-[1.02]"
                     : "bg-white/60 border-transparent hover:bg-white/80 hover:shadow-sm"
-                } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
               >
                 <div
-                  className={`w-7 h-7 rounded-lg shadow-sm transition-all duration-200 ${
+                  className={`w-5 h-3 rounded-lg shadow-sm transition-all duration-200 ${
                     selectedClassId === cls.id
                       ? "ring-3 ring-blue-500/30 scale-110"
                       : "ring-2 ring-white/80"
@@ -1073,7 +1092,9 @@ export default function LULCMap() {
             <div className="bg-white rounded-2xl shadow-xl p-8 flex items-center gap-4">
               <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
               <span className="text-slate-700 font-medium">
-                {isMapInitialized.current ? 'Loading WMS layer...' : 'Initializing map...'}
+                {isMapInitialized.current
+                  ? "Loading WMS layer..."
+                  : "Initializing map..."}
               </span>
             </div>
           </div>
