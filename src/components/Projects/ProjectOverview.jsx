@@ -122,7 +122,7 @@ export default function ProjectOverview() {
   };
 
   return (
-    <div className="font-sans max-w-6xl mx-auto p-6 space-y-6 bg-white shadow-xl rounded-2xl mt-5">
+    <div className="font-sans max-w-6xl mx-auto p-5 space-y-6 bg-white shadow-xl rounded-2xl ">
       {/* Header */}
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-semibold text-[#02353C]">{name}</h1>

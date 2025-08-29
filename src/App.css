@@ -1,26 +1,13 @@
 @import "tailwindcss";
 
-
-
+/* ✅ Base styles for body */
 body {
   font-family: 'Inter', sans-serif;
-  background-color: #FFFFFF ,text-dark, Text font-sans;
-}
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  background-color: #FFFFFF; /* Use Tailwind classes in HTML for better control */
+  color: #111827; /* Dark text */
 }
 
+/* ✅ Fix for Leaflet map z-index issues */
 .leaflet-container {
   z-index: 0 !important;
 }
@@ -29,9 +16,10 @@ body {
   z-index: 0 !important;
 }
 
+/* ✅ Custom Scrollbar (only applies if you add the class) */
 .custom-scrollbar {
-  scrollbar-width: thin; 
-  scrollbar-color: #94a3b8 transparent; 
+  scrollbar-width: thin;
+  scrollbar-color: #94a3b8 transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
@@ -51,6 +39,7 @@ body {
   background-color: #64748b;
 }
 
+/* ✅ Tailwind Utilities Layer for Scrollbar */
 @layer utilities {
   .custom-scrollbar {
     scrollbar-width: thin;

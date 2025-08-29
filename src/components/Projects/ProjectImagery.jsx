@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useOutletContext } from "react-router-dom";
 import {uploadSatelliteImagery,uploadDroneImagery,} from "../../services/uploadimagnery.js";
 import { fetchProjectById } from "../../services/projectsDetailsApi.js";
+import { Clock } from "lucide-react";
 
 const ProjectImagery = () => {
   const { id } = useParams()

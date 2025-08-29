@@ -9,6 +9,7 @@ import {
   Globe2,
 } from "lucide-react"; 
 
+
 const Sidebar = () => {
   const navItems = [
     { path: "/", label: "Dashboard", icon: <Home size={18} /> },
