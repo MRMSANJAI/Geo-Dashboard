@@ -5,7 +5,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Play } from "lucide-react";
 import StatusIcon from "./StatusIcon.jsx";
-import tagColors from "../../values/tagColours.js";
+import {tagColors, sortTags, TAG_ORDER} from "../../values/tagConfig.js";
 import ip from "../../values/values.js";
 
 const ZoomToLocation = ({ location, zoom = 14 }) => {
@@ -132,9 +132,9 @@ export default function ProjectOverview() {
       <h5 className="text-gray-700">{description}</h5>
 
       {/* Tags */}
-      <div className="flex flex-wrap gap-2">
-        {tags.length > 0 ? (
-          tags.map((tag, idx) => (
+    <div className="flex flex-wrap gap-2">
+        {tagsState.length > 0 ? (
+          sortTags(tagsState).map((tag, idx) => (
             <span
               key={idx}
               className={clsx(

@@ -35,7 +35,7 @@ export default function ProjectDetailLayout() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen mt-5">
+      <div className="flex min-h-screen mt-4">
         <ProjectSidebar />
         <div className="flex-1 flex items-center justify-center">
           <p className="text-gray-500">Loading project details...</p>
@@ -45,7 +45,7 @@ export default function ProjectDetailLayout() {
   }
 
   return (
-    <div className="flex">
+    <div className="flex h-screen ">
       {/* Sidebar - fixed for desktop */}
       <div className="hidden md:block fixed left-0 h-screen w-64 bg-[#121b24]">
         <ProjectSidebar />
@@ -53,8 +53,8 @@ export default function ProjectDetailLayout() {
 
       {/* Main content area */}
       <div
-        style={{ height: "100vh" }}
-        className="flex-1 md:ml-64 min-h-screen bg-[#C1F6ED]/20 p-6"
+        // style={{ height: "100vh" }}
+        className="flex-1 md:ml-64 h-screen bg-[#C1F6ED]/20 p-6"
       >
         <Outlet context={{ project, refreshProject, updateProjectTags }} />
         {/* ✅ Now components can call updateProjectTags */}

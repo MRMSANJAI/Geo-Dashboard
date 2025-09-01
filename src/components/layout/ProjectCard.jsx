@@ -1,46 +1,35 @@
 import React, { useEffect, useState } from "react";
 import { Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
-const TAG_ORDER = ["AOI", "Imagery", "NDVI", "LULC", "Report"];
+import { sortTags, TAG_ORDER, tagColors } from "../../values/tagConfig";
 
-const tagColors = {
-  AOI: "bg-purple-600 text-white",
-  Imagery: "bg-green-600 text-white",
-  NDVI: "bg-blue-600 text-white",
-  LULC: "bg-yellow-500 text-black",
-  Report: "bg-red-500 text-white",
-};
+// const TAG_ORDER = ["AOI", "Imagery", "NDVI", "LULC", "Report"];
 
-const humanStatus = (statusBool) => (statusBool ? "Ongoing" : "Closed");
+// const tagColors = {
+//   AOI: "bg-purple-600 text-white",
+//   Imagery: "bg-green-600 text-white",
+//   NDVI: "bg-blue-600 text-white",
+//   LULC: "bg-yellow-500 text-black",
+//   Report: "bg-red-500 text-white",
+// };
 
 export default function ProjectCard({ projects }) {
-  // const [projects, setProjects] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("");
-  const [sortByDate, setSortByDate] = useState(false);
-
-  // useEffect(() => {
-  //   import("../data/project.json")
-  //     .then((mod) => {
-  //       // the JSON exports array by default
-  //       setProjects(mod.default || mod);
-  //       setFiltered(mod.default || mod);
-  //     })
-  //     .catch((e) => {
-  //       console.error("Failed to load projects:", e);
-  //     });
-  // }, []);
+  const [sortByDate, setSortByDate] = useState(true); // ✅ Default to true
 
   useEffect(() => {
     let out = [...projects];
 
+    // ✅ Filter by selected tags
     if (selectedTags.length > 0) {
       out = out.filter((p) =>
         selectedTags.every((t) => p.tags && p.tags.includes(t))
       );
     }
 
+    // ✅ Filter by status
     if (selectedStatus) {
       out = out.filter((p) => {
         if (selectedStatus === "ongoing") return p.status.isActive === true;
@@ -49,6 +38,7 @@ export default function ProjectCard({ projects }) {
       });
     }
 
+    // ✅ Sort by date if checkbox is checked
     if (sortByDate) {
       out.sort((a, b) => new Date(b.date) - new Date(a.date));
     }
@@ -65,14 +55,13 @@ export default function ProjectCard({ projects }) {
   const clearAll = () => {
     setSelectedTags([]);
     setSelectedStatus("");
-    setSortByDate(false);
+    setSortByDate(true); // ✅ Reset sort to true after clearing
   };
 
   return (
-    // <div className="bg-[#FFFFFF] p-6 rounded-xl shadow-md text-[#333333]">
     <>
       {/* Header Summary */}
-      <div className="  flex flex-col md:flex-row justify-between items-start gap-4 mb-4">
+      <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-4">
         <div>
           <h2 className="text-2xl font-semibold">Project Overview</h2>
           <p className="text-sm font-medium text-gray-700 whitespace-nowrap">
@@ -114,19 +103,19 @@ export default function ProjectCard({ projects }) {
             <option value="closed">Closed</option>
           </select>
 
-          {/* Sort toggle */}
+          {/* Sort by Date checkbox */}
           <label className="inline-flex items-center gap-2 text-sm">
             <input
               type="checkbox"
-              checked={sortByDate}
-              onChange={() => setSortByDate((s) => !s)}
+              checked={sortByDate} // ✅ Controlled by state
+              onChange={() => setSortByDate((prev) => !prev)} // ✅ Toggle
               className="mr-1"
             />
             Sort by Date
           </label>
 
-          {/* Clear */}
-          {(selectedTags.length || selectedStatus || sortByDate) && (
+          {/* Clear All */}
+          {(selectedTags.length || selectedStatus || sortByDate !== true) && (
             <button
               onClick={clearAll}
               className="text-xs px-3 py-1 bg-red-500 text-white rounded-md"
@@ -145,7 +134,7 @@ export default function ProjectCard({ projects }) {
               key={idx}
               className="relative group p-6 rounded-2xl bg-white shadow-md hover:shadow-xl transition"
             >
-              {/* Top row: date left, title right */}
+              {/* Top row */}
               <div className="flex justify-between items-center mb-2">
                 <Link
                   to={`/project-detail/${proj.id}`}
@@ -153,7 +142,7 @@ export default function ProjectCard({ projects }) {
                 >
                   <h3 className="text-lg font-bold cursor-pointer text-[#02353C] hover:underline">
                     {proj.title}
-                  </h3>{" "}
+                  </h3>
                 </Link>
 
                 <div className="flex items-center gap-1 text-sm text-gray-600">
@@ -162,11 +151,10 @@ export default function ProjectCard({ projects }) {
                 </div>
               </div>
 
-              {/* Second row: status badge + tags */}
+              {/* Tags and status */}
               <div className="flex flex-wrap justify-between items-center gap-2">
-                {/* Tags */}
                 <div className="flex flex-wrap gap-2">
-                  {proj.tags?.map((tag, i) => (
+                  {sortTags(proj.tags || []).map((tag, i) => (
                     <span
                       key={i}
                       className={`text-xs font-medium px-2 py-1 rounded-full ${
@@ -177,7 +165,6 @@ export default function ProjectCard({ projects }) {
                     </span>
                   ))}
                 </div>
-                {/* Status Dot */}
                 <div className="flex items-center gap-2">
                   <span
                     className={`h-3 w-3 rounded-full ${
@@ -194,7 +181,6 @@ export default function ProjectCard({ projects }) {
           </div>
         )}
       </div>
-      {/* </div> */}
     </>
   );
 }

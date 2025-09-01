@@ -146,13 +146,13 @@ const MyMap = () => {
             )}
           </select>
         )}
-
+{/* 
         <input
           type="file"
           accept=".kml,.geojson,.json"
           onChange={handleFileUpload}
           className="text-sm text-[#333333] bg-white border border-[#2EA7E0] px-3 py-2 rounded-md cursor-pointer transition duration-200 hover:bg-[#2EA7E0]/10"
-        />
+        /> */}
       </div>
 
       {fileError && <p className="text-red-500 text-sm">{fileError}</p>}

@@ -97,14 +97,14 @@ export default function ProjectAOI() {
       setTimeout(() => {
         setSuccessMessage("");
         setIsModalOpen(false);
-      }, 2000);
+      }, 1000);
     } catch (err) {
       setErrorMessage("❌ Failed to upload.");
       console.error("Failed to upload AOI:", err);
 
       setTimeout(() => {
         setErrorMessage("");
-      }, 5000);
+      }, 2000);
     } finally {
       setIsLoading(false);
     }
@@ -144,13 +144,12 @@ export default function ProjectAOI() {
 
   return (
     <>
-      {" "}
-      <h2 className="text-2xl font-sans font-semibold mb-4 text-gray-800">
-        {project ? project.title : "Loading project..."}
-      </h2>
       <div className="flex flex-col font-sans gap-4 px-8 h-100% bg-gray-100 rounded-lg shadow-inner p-4">
-        {/* Modal */}
-
+        <h2 className="text-2xl font-sans font-semibold  text-gray-800">
+        {project ? project.title : "Loading project..."}
+      </h2> 
+       
+      {/* Modal */}
         {isModalOpen && (
           <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/30 backdrop-blur-sm z-index-40">
             <div className="bg-white p-6 rounded-lg w-full max-w-md mx-4 shadow-xl relative">

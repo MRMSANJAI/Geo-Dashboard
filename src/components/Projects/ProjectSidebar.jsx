@@ -16,7 +16,7 @@ const ProjectSidebar = () => {
   const [isOpen, setIsOpen] = useState(false); // sidebar toggle (mobile)
 
   const navItems = [
-    { path: "/", label: "Home", icon: <Home size={18} /> },
+    // { path: "/", label: "Home", icon: <Home size={18} /> },
     { path: `/project-detail/${id}`, label: "Project Details", icon: <LineChart size={18} /> },
     { path: `aoi/${id}`, label: "AOI", icon: <MapPin size={18} /> },
     { path: `/project-detail/${id}/imagery`, label: "Imagery", icon: <ImageIcon size={18} /> },
