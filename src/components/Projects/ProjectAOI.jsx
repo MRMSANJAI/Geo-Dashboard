@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { MapContainer, TileLayer, useMap } from "react-leaflet";
 import * as toGeoJSON from "@tmcw/togeojson";
-// import L from "leaflet";
+import L from "leaflet";
 // import "leaflet/dist/leaflet.css";
 import { uploadAoi } from "../../services/uploadAoiApi";
 import { useParams, useOutletContext } from "react-router-dom";

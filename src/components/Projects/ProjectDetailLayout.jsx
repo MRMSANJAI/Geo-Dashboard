@@ -8,7 +8,7 @@ export default function ProjectDetailLayout() {
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // ✅ put fetch logic into a reusable function
+  // ✅ Fetch logic
   const refreshProject = useCallback(async () => {
     setLoading(true);
     const data = await fetchProjectById(id);
@@ -19,6 +19,19 @@ export default function ProjectDetailLayout() {
   useEffect(() => {
     refreshProject();
   }, [refreshProject]);
+
+  // ✅ Add this function for updating tags locally without refresh
+  const updateProjectTags = useCallback((newTag) => {
+    setProject((prevProject) => {
+      if (prevProject?.tags?.includes(newTag)) {
+        return prevProject;
+      }
+      return {
+        ...prevProject,
+        tags: [...(prevProject?.tags || []), newTag]
+      };
+    });
+  }, []);
 
   if (loading) {
     return (
@@ -43,8 +56,8 @@ export default function ProjectDetailLayout() {
         style={{ height: "100vh" }}
         className="flex-1 md:ml-64 min-h-screen bg-[#C1F6ED]/20 p-6"
       >
-        <Outlet context={{ project, refreshProject }} /> 
-        {/* ✅ now both project + refresh available */}
+        <Outlet context={{ project, refreshProject, updateProjectTags }} />
+        {/* ✅ Now components can call updateProjectTags */}
       </div>
     </div>
   );
