@@ -230,6 +230,21 @@ const ProjectImagery = () => {
       setProcessingNDVI(false);
     }
   };
+  const hasAOITag = () => {
+    if (!project?.tags) return false;
+    const tagNames = project.tags.map((tag) =>
+      typeof tag === "string" ? tag : tag.name || tag
+    );
+    return tagNames.includes("AOI");
+  };
+
+  const hasImageryTag = () => {
+    if (!project?.tags) return false;
+    const tagNames = project.tags.map((tag) =>
+      typeof tag === "string" ? tag : tag.name || tag
+    );
+    return tagNames.includes("Imagery");
+  };
 
   //  Check if NDVI button should be disabled
   const isNDVIDisabled = () => {
@@ -265,23 +280,32 @@ const ProjectImagery = () => {
           {ndviError}
         </div>
       )}
+      <div className="mb-3">
+        {!hasAOITag() && !hasImageryTag() && (
+          <div className="bg-yellow-100 border border-yellow-300 text-yellow-800 px-4 py-2 rounded font-medium">
+            ⚠️ Both AOI and Imagery tags are required. Upload imagery and define
+            AOI first to enable NDVI processing.
+          </div>
+        )}
 
-      {/*  Required Tags Status Indicator */}
-      {(!hasRequiredTags() || hasNDVITag()) && (
-        <div className="bg-yellow-100 border border-yellow-300 text-yellow-800 px-4 py-2 rounded mb-3 font-medium">
-          {!hasRequiredTags() &&
-            "⚠️ Both AOI and Imagery tags are required. Upload imagery and define AOI first to enable NDVI processing."}
-          {hasRequiredTags() && hasNDVITag() && "ℹ️ Imagery Avaliable"}
-        </div>
-      )}
-      {/* Required Tags Status Indicator */}
-      {/* {(!hasRequiredTags() || hasNDVITag() || project?.satelliteImagery?.length > 0) && (
-  <div className="bg-yellow-100 border border-yellow-300 text-yellow-800 px-4 py-2 rounded mb-3 font-medium">
-    {!hasRequiredTags() && "⚠️ Both AOI and Imagery tags are required. Upload imagery and define AOI first to enable NDVI processing."}
-    {hasRequiredTags() && hasNDVITag() && "ℹ️ NDVI has already been processed for this project."}
-    {project?.satelliteImagery?.length > 0 && "📷 Satellite imagery already uploaded for this project."}
-  </div>
-)} */}
+        {hasAOITag() && !hasImageryTag() && (
+          <div className="bg-blue-100 border border-blue-300 text-blue-800 px-4 py-2 rounded font-medium">
+            ℹ️ AOI uploaded. Upload Imagery for further process.
+          </div>
+        )}
+
+        {hasAOITag() && hasImageryTag() && !hasNDVITag() && (
+          <div className="bg-gray-100 border border-gray-300 text-gray-800 px-4 py-2 rounded font-medium flex items-center justify-between">
+            <span>✅ AOI and Imagery uploaded. Run NDVI process now.</span>
+          </div>
+        )}
+
+        {hasAOITag() && hasImageryTag() && hasNDVITag() && (
+          <div className="bg-green-100 border border-green-300 text-green-800 px-4 py-2 rounded font-medium">
+            ✅ NDVI has already been processed for this project.
+          </div>
+        )}
+      </div>
 
       {/* Mode selection */}
       <div className="flex gap-6 mb-6">
@@ -318,7 +342,7 @@ const ProjectImagery = () => {
             Satellite Imagery
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {["red", "green", "blue", "nir"].map((band) => (
+            {["red", "green", "blue", "nir","swir"].map((band) => (
               <div key={band} className="flex flex-col">
                 <label className="block text-sm font-medium text-gray-600 mb-1 capitalize">
                   {band} Band

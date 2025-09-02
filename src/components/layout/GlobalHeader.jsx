@@ -30,7 +30,7 @@ useEffect(() => {
 <header
   className="fixed top-0 left-0 w-full h-16 flex items-center justify-between px-6 shadow-md z-50"
   style={{
-    background: "linear-gradient(to right, #1d2a35, #2EAF7D)",
+    background: "linear-gradient(to right, #0f1c29, #2EAF7D)",
     color: "#FFFFFF",
   }}
 >
