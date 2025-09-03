@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useOutletContext } from "react-router-dom";
-import {
-  uploadSatelliteImagery,
-  uploadDroneImagery,
-} from "../../services/uploadimagnery.js";
+import { uploadSatelliteImagery,uploadDroneImagery,} from "../../services/uploadimagnery.js";
 import { fetchProjectById } from "../../services/projectsDetailsApi.js";
 import ip from "../../values/values.js";
 

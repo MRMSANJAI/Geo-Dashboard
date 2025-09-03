@@ -40,6 +40,10 @@ export default function LULCPage() {
     success: false,
     error: null,
   });
+  
+  // New state for the processing overlay
+  const [showProcessingOverlay, setShowProcessingOverlay] = useState(false);
+  const [processingStep, setProcessingStep] = useState('');
 
   function addCss(href) {
     if (typeof document === "undefined") return;
@@ -441,12 +445,17 @@ export default function LULCPage() {
     },
   };
 
+  // Enhanced export function with immediate overlay
   async function exportGeoJSON() {
     if (!drawnRef.current) return;
 
-    setExportStatus({ loading: true, success: false, error: null });
+    // ✅ Show overlay immediately
+    setShowProcessingOverlay(true);
+    setProcessingStep('Preparing data...');
 
     try {
+      setProcessingStep('Generating GeoJSON features...');
+      
       const features = [];
       drawnRef.current.eachLayer((layer) => {
         const feat = layer.feature
@@ -479,6 +488,7 @@ export default function LULCPage() {
         });
       });
 
+      setProcessingStep('Creating feature collection...');
       const featureCollection = { type: "FeatureCollection", features };
 
       // Convert to Blob
@@ -486,11 +496,13 @@ export default function LULCPage() {
         type: "application/json",
       });
 
+      setProcessingStep('Preparing upload...');
       const formData = new FormData();
       formData.append("training_file", blob, `lulc_project_${id}.geojson`);
       formData.append("project_id", id);
       formData.append("created_at", new Date().toISOString());
 
+      setProcessingStep('Uploading to server...');
       const response = await fetch(
         `http://192.168.29.152:8000/api/projects/${id}/lulc/`,
         {
@@ -505,42 +517,22 @@ export default function LULCPage() {
         throw new Error(`HTTP ${response.status} - ${errorText}`);
       }
 
-      // const result = await response.json();
-      // console.log("Export successful:", result);
-
-      // //  Set success status
-      // setExportStatus({ loading: false, success: true, error: null });
-
-      // //  ADD: Trigger automatic refresh after successful export
-      // if (refreshProject) {
-      //   refreshProject();
-      // }
-
-      // //  ADD: Auto-hide success status after 5 seconds
-      // setTimeout(() => {
-      //   setExportStatus({ loading: false, success: false, error: null });
-      // }, 5000);
-
+      setProcessingStep('Processing response...');
       const result = await response.json();
       console.log("Export successful:", result);
 
-      // ✅ Set success status
+      // Set success status
       setExportStatus({ loading: false, success: true, error: null });
 
-      // ✅ Update tags immediately without refreshing
+      //  Update tags immediately without refreshing
       if (updateProjectTags && !project?.tags?.includes("LULC")) {
         updateProjectTags("LULC");
       }
 
-      // ❌ REMOVE this - we don't want full refresh because it clears polygons
-      // if (refreshProject) {
-      //   refreshProject();
-      // }
-
-      // ✅ Auto-hide success message after 5 seconds
+      //  Auto-hide success message after 3 seconds
       setTimeout(() => {
         setExportStatus({ loading: false, success: false, error: null });
-      }, 5000);
+      }, 1000);
 
       // Optional: Download locally
       const downloadUrl = URL.createObjectURL(blob);
@@ -549,6 +541,7 @@ export default function LULCPage() {
       a.download = `lulc_polygons_project_${id}.geojson`;
       a.click();
       URL.revokeObjectURL(downloadUrl);
+
     } catch (error) {
       console.error("Export failed:", error);
       setExportStatus({
@@ -560,7 +553,11 @@ export default function LULCPage() {
       // Auto-hide error after 5 seconds
       setTimeout(() => {
         setExportStatus({ loading: false, success: false, error: null });
-      }, 5000);
+      }, 3000);
+    } finally {
+      // ✅ Hide overlay after process completes
+      setShowProcessingOverlay(false);
+      setProcessingStep('');
     }
   }
 
@@ -589,9 +586,45 @@ export default function LULCPage() {
 
   return (
     <div
-      className="font-sans w-full flex bg-gradient-to-br from-slate-50 to-slate-100"
+      className="font-sans w-full flex bg-gradient-to-br from-slate-50 to-slate-100 custom-scrollbar"
       style={{ height: "calc(100vh - 60px)" }}
     >
+      {/* Processing Overlay Modal - Non-closable */}
+      {showProcessingOverlay && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[9999]">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4">
+            <div className="flex flex-col items-center text-center">
+              {/* Animated spinner */}
+              <div className="relative mb-6">
+                <div className="w-16 h-16 border-4 border-blue-200 rounded-full"></div>
+                <div className="absolute top-0 left-0 w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+              </div>
+              
+              {/* Title */}
+              <h3 className="text-xl font-bold text-gray-800 mb-2">
+                Processing LULC Export
+              </h3>
+              
+              {/* Dynamic status message */}
+              <p className="text-gray-600 mb-4">
+                {processingStep || 'Please wait while we process your request...'}
+              </p>
+              
+              {/* Progress indicator */}
+              <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+                <div className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full animate-pulse" 
+                     style={{ width: '60%' }}></div>
+              </div>
+              
+              {/* Warning message */}
+              <p className="text-sm text-gray-500">
+                Please do not close this window or navigate away.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Sidebar */}
       <aside
         className="w-80 bg-white/95 backdrop-blur-sm shadow-xl border-r border-slate-200 p-6 flex flex-col gap-6 overflow-y-auto custom-scrollbar"
@@ -707,7 +740,7 @@ export default function LULCPage() {
           <button
             onClick={exportGeoJSON}
             disabled={
-              loading || polygonsList.length === 0 || exportStatus.loading
+              loading || polygonsList.length === 0 || showProcessingOverlay
             }
             className={`flex-1 font-medium py-2.5 px-4 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:transform-none transition-all duration-200 text-sm ${
               exportStatus.success
@@ -717,22 +750,22 @@ export default function LULCPage() {
                 : "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
             } disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-white`}
           >
-            {exportStatus.loading ? (
+            {showProcessingOverlay ? (
               <div className="flex items-center justify-center gap-2">
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                <span>Exporting...</span>
+                <span>Processing...</span>
               </div>
             ) : exportStatus.success ? (
               `✓ Exported (${polygonsList.length})`
             ) : exportStatus.error ? (
               `✗ Export Failed (${polygonsList.length})`
             ) : (
-              `Export to API (${polygonsList.length})`
+              `Submit `
             )}
           </button>
           <button
             onClick={clearAll}
-            disabled={loading || polygonsList.length === 0}
+            disabled={loading || polygonsList.length === 0 || showProcessingOverlay}
             className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-white font-medium px-4 py-2.5 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:transform-none transition-all duration-200 text-sm"
           >
             Clear All
