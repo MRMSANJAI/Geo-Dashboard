@@ -7,6 +7,9 @@ export default function ProjectDetailLayout() {
   const { id } = useParams();
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showProcessingOverlay, setShowProcessingOverlay] = useState(false);
+  const [savedPolygons, setSavedPolygons] = useState([]);
+
 
   // ✅ Fetch logic
   const refreshProject = useCallback(async () => {
@@ -56,7 +59,7 @@ export default function ProjectDetailLayout() {
 
       {/* Main Content */}
       <div className="flex-1 overflow-auto md:ml-64 min-h-screen bg-[#C1F6ED]/20 p-6">
-        <Outlet context={{ project, refreshProject, updateProjectTags }} />
+        <Outlet context={{ project, refreshProject, updateProjectTags,showProcessingOverlay,setShowProcessingOverlay ,savedPolygons,setSavedPolygons}} />
       </div>
     </>
   );

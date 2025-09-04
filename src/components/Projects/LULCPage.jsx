@@ -40,10 +40,24 @@ export default function LULCPage() {
     success: false,
     error: null,
   });
-  
+
   // New state for the processing overlay
-  const [showProcessingOverlay, setShowProcessingOverlay] = useState(false);
-  const [processingStep, setProcessingStep] = useState('');
+  // const [showProcessingOverlay, setShowProcessingOverlay] = useState(false);
+  const [processingStep, setProcessingStep] = useState("");
+  const { showProcessingOverlay, setShowProcessingOverlay } =
+    useOutletContext();
+
+  const { savedPolygons, setSavedPolygons } = useOutletContext();
+
+  // ✅ Whenever polygonsList updates, save them to context
+  useEffect(() => {
+    if (polygonsList.length > 0) {
+      const geojson = polygonsList.map((p) => p.layer.toGeoJSON());
+      setSavedPolygons(geojson);
+    } else {
+      setSavedPolygons([]); // clear if no polygons
+    }
+  }, [polygonsList, setSavedPolygons]);
 
   function addCss(href) {
     if (typeof document === "undefined") return;
@@ -236,6 +250,14 @@ export default function LULCPage() {
           }
         );
 
+        // // ✅ Drawn Items (Training Polygons)
+        // const drawnItems = new L.FeatureGroup();
+        // drawnRef.current = drawnItems;
+        // map.addLayer(drawnItems);
+
+        // // ✅ Setup drawing controls
+        // const { refreshList } = setupMapControls(map, drawnItems);
+
         // ✅ Drawn Items (Training Polygons)
         const drawnItems = new L.FeatureGroup();
         drawnRef.current = drawnItems;
@@ -243,6 +265,24 @@ export default function LULCPage() {
 
         // ✅ Setup drawing controls
         const { refreshList } = setupMapControls(map, drawnItems);
+
+        // 🔥 Restore saved polygons here
+        if (savedPolygons && savedPolygons.length > 0) {
+          savedPolygons.forEach((feat) => {
+            const layer = L.geoJSON(feat, {
+              style: {
+                color: "#000",
+                weight: 2,
+                fillOpacity: 0.4,
+              },
+            });
+            layer.eachLayer((l) => {
+              l._customId = `poly_${Date.now()}_${Math.random()}`;
+              drawnItems.addLayer(l);
+            });
+          });
+          refreshList();
+        }
 
         // ✅ Prepare for WMS Layer
         let wmsLayer = null;
@@ -294,7 +334,7 @@ export default function LULCPage() {
 
         // ✅ Add Layer Control
         const baseMaps = {
-          "OpenStreetMap": osm,
+          OpenStreetMap: osm,
           "Esri Satellite": esriSat,
           "Topo Map": topo,
         };
@@ -347,7 +387,7 @@ export default function LULCPage() {
     };
   }, []);
 
-  // Handle class selection changes - only update control, don't recreate map
+  // Handle class selection changes
   useEffect(() => {
     if (!mapRef.current || !controlRef.current || !isMapInitialized.current)
       return;
@@ -451,11 +491,11 @@ export default function LULCPage() {
 
     // ✅ Show overlay immediately
     setShowProcessingOverlay(true);
-    setProcessingStep('Preparing data...');
+    setProcessingStep("Preparing data...");
 
     try {
-      setProcessingStep('Generating GeoJSON features...');
-      
+      setProcessingStep("Generating GeoJSON features...");
+
       const features = [];
       drawnRef.current.eachLayer((layer) => {
         const feat = layer.feature
@@ -488,7 +528,7 @@ export default function LULCPage() {
         });
       });
 
-      setProcessingStep('Creating feature collection...');
+      setProcessingStep("Creating feature collection...");
       const featureCollection = { type: "FeatureCollection", features };
 
       // Convert to Blob
@@ -496,13 +536,13 @@ export default function LULCPage() {
         type: "application/json",
       });
 
-      setProcessingStep('Preparing upload...');
+      setProcessingStep("Preparing upload...");
       const formData = new FormData();
       formData.append("training_file", blob, `lulc_project_${id}.geojson`);
       formData.append("project_id", id);
       formData.append("created_at", new Date().toISOString());
 
-      setProcessingStep('Uploading to server...');
+      setProcessingStep("Uploading to server...");
       const response = await fetch(
         `http://192.168.29.152:8000/api/projects/${id}/lulc/`,
         {
@@ -517,7 +557,7 @@ export default function LULCPage() {
         throw new Error(`HTTP ${response.status} - ${errorText}`);
       }
 
-      setProcessingStep('Processing response...');
+      setProcessingStep("Processing response...");
       const result = await response.json();
       console.log("Export successful:", result);
 
@@ -541,7 +581,6 @@ export default function LULCPage() {
       a.download = `lulc_polygons_project_${id}.geojson`;
       a.click();
       URL.revokeObjectURL(downloadUrl);
-
     } catch (error) {
       console.error("Export failed:", error);
       setExportStatus({
@@ -557,7 +596,7 @@ export default function LULCPage() {
     } finally {
       // ✅ Hide overlay after process completes
       setShowProcessingOverlay(false);
-      setProcessingStep('');
+      setProcessingStep("");
     }
   }
 
@@ -589,42 +628,6 @@ export default function LULCPage() {
       className="font-sans w-full flex bg-gradient-to-br from-slate-50 to-slate-100 custom-scrollbar"
       style={{ height: "calc(100vh - 60px)" }}
     >
-      {/* Processing Overlay Modal - Non-closable */}
-      {showProcessingOverlay && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[9999]">
-          <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4">
-            <div className="flex flex-col items-center text-center">
-              {/* Animated spinner */}
-              <div className="relative mb-6">
-                <div className="w-16 h-16 border-4 border-blue-200 rounded-full"></div>
-                <div className="absolute top-0 left-0 w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-              </div>
-              
-              {/* Title */}
-              <h3 className="text-xl font-bold text-gray-800 mb-2">
-                Processing LULC Export
-              </h3>
-              
-              {/* Dynamic status message */}
-              <p className="text-gray-600 mb-4">
-                {processingStep || 'Please wait while we process your request...'}
-              </p>
-              
-              {/* Progress indicator */}
-              <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
-                <div className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full animate-pulse" 
-                     style={{ width: '60%' }}></div>
-              </div>
-              
-              {/* Warning message */}
-              <p className="text-sm text-gray-500">
-                Please do not close this window or navigate away.
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Sidebar */}
       <aside
         className="w-80 bg-white/95 backdrop-blur-sm shadow-xl border-r border-slate-200 p-6 flex flex-col gap-6 overflow-y-auto custom-scrollbar"
@@ -765,7 +768,9 @@ export default function LULCPage() {
           </button>
           <button
             onClick={clearAll}
-            disabled={loading || polygonsList.length === 0 || showProcessingOverlay}
+            disabled={
+              loading || polygonsList.length === 0 || showProcessingOverlay
+            }
             className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-white font-medium px-4 py-2.5 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:transform-none transition-all duration-200 text-sm"
           >
             Clear All
@@ -820,6 +825,45 @@ export default function LULCPage() {
             </div>
           </div>
         )}
+        {/* Processing Overlay Modal - Non-closable */}
+        {showProcessingOverlay && (
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[999]">
+            <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4">
+              <div className="flex flex-col items-center text-center">
+                {/* Animated spinner */}
+                <div className="relative mb-6">
+                  <div className="w-16 h-16 border-4 border-blue-200 rounded-full"></div>
+                  <div className="absolute top-0 left-0 w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                </div>
+
+                {/* Title */}
+                <h3 className="text-xl font-bold text-gray-800 mb-2">
+                  Processing LULC Export
+                </h3>
+
+                {/* Dynamic status message */}
+                <p className="text-gray-600 mb-4">
+                  {processingStep ||
+                    "Please wait while we process your request..."}
+                </p>
+
+                {/* Progress indicator */}
+                <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+                  <div
+                    className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full animate-pulse"
+                    style={{ width: "60%" }}
+                  ></div>
+                </div>
+
+                {/* Warning message */}
+                <p className="text-sm text-gray-500">
+                  Please do not close this window or navigate away.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div
           ref={containerRef}
           className="w-full h-full overflow-hidden shadow-2xl"
